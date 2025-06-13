@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import ReactMarkdown from 'react-markdown';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -336,7 +337,27 @@ const FloatingChat: React.FC = () => {
               lineHeight: '1.4',
               border: msg.role === 'assistant' ? '1px solid #e0e0e0' : 'none'
             }}>
-              {msg.content}
+              {msg.role === 'assistant' ? (
+                <ReactMarkdown 
+                  components={{
+                    p: ({children}) => <p style={{margin: '0.3em 0', lineHeight: '1.4'}}>{children}</p>,
+                    h1: ({children}) => <h1 style={{fontSize: '1.1em', fontWeight: 'bold', margin: '0.5em 0 0.3em 0'}}>{children}</h1>,
+                    h2: ({children}) => <h2 style={{fontSize: '1.05em', fontWeight: 'bold', margin: '0.4em 0 0.2em 0'}}>{children}</h2>,
+                    h3: ({children}) => <h3 style={{fontSize: '1.02em', fontWeight: 'bold', margin: '0.4em 0 0.2em 0'}}>{children}</h3>,
+                    ul: ({children}) => <ul style={{margin: '0.3em 0', paddingLeft: '1.2em'}}>{children}</ul>,
+                    ol: ({children}) => <ol style={{margin: '0.3em 0', paddingLeft: '1.2em'}}>{children}</ol>,
+                    li: ({children}) => <li style={{margin: '0.1em 0'}}>{children}</li>,
+                    code: ({children}) => <code style={{backgroundColor: '#f0f0f0', padding: '0.1em 0.3em', borderRadius: '2px', fontSize: '0.9em'}}>{children}</code>,
+                    pre: ({children}) => <pre style={{backgroundColor: '#f0f0f0', padding: '0.5em', borderRadius: '4px', overflow: 'auto', margin: '0.3em 0', fontSize: '0.85em'}}>{children}</pre>,
+                    strong: ({children}) => <strong style={{fontWeight: 'bold'}}>{children}</strong>,
+                    em: ({children}) => <em style={{fontStyle: 'italic'}}>{children}</em>
+                  }}
+                >
+                  {msg.content}
+                </ReactMarkdown>
+              ) : (
+                msg.content
+              )}
             </div>
           </div>
         ))}
