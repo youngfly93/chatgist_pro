@@ -1,3 +1,5 @@
+# R Shiny Application files
+# ==========================
 # R Data files
 .RData
 .Rhistory
@@ -6,10 +8,12 @@
 # MacOS files
 .DS_Store
 ._*
+Thumbs.db
 
 # Temporary files
 *.tmp
 *.temp
+*.bak
 
 # Generated plot files
 current_plot_*.png
@@ -20,9 +24,6 @@ chat_plot_*.png
 *_backup_*.R
 *.backup
 *_before_*.R.backup
-
-# Log files
-*.log
 
 # API keys and sensitive data
 *api_key*
@@ -69,3 +70,40 @@ original/
 
 # Shell scripts
 *.sh
+
+# Frontend/Backend files (for hybrid projects)
+# ===========================================
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+
+# Build outputs
+dist/
+build/
+*/dist/
+*/build/
+
+# Frontend logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+coverage/
+.nyc_output/
+
+# Log files
+*.log
