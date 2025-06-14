@@ -1,0 +1,71 @@
+# R Data files
+.RData
+.Rhistory
+.Rproj.user
+
+# MacOS files
+.DS_Store
+._*
+
+# Temporary files
+*.tmp
+*.temp
+
+# Generated plot files
+current_plot_*.png
+backup_plot_*.png
+chat_plot_*.png
+
+# Backup files
+*_backup_*.R
+*.backup
+*_before_*.R.backup
+
+# Log files
+*.log
+
+# API keys and sensitive data
+*api_key*
+*token*
+
+# Test and debug files
+test_*.R
+debug_*.R
+diagnose_*.R
+quick_*.R
+fix_*.R
+final_*.R
+*_fix.R
+*_test.R
+
+# Temporary analysis files
+mcm7_*.txt
+mcm7_*.json
+gene_*.txt
+
+# Development files
+example_*.R
+setup_*.R
+install_*.R
+migrate_*.R
+optimize_*.R
+check_*.R
+apply_*.R
+complete_*.R
+improved_*.R
+fixed_*.R
+simple_*.R
+ultra_*.R
+siliconflow_*.R
+url_based_*.R
+restore_*.R
+update_*.R
+
+# Claude development artifacts
+.claude/
+
+# Original data backup
+original/
+
+# Shell scripts
+*.sh
