@@ -8,7 +8,7 @@
 /* Navbar Styles */
 .navbar {
   background: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: var(--shadow-sm);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -17,7 +17,7 @@
 .nav-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem 2rem;
+  padding: var(--space-2) var(--space-4);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -27,19 +27,19 @@
   display: flex;
   align-items: center;
   text-decoration: none;
-  font-size: 1.5rem;
+  font-size: var(--text-xl);
   font-weight: bold;
   color: var(--clr-primary-500);
 }
 
 .logo-icon {
-  font-size: 2rem;
-  margin-right: 0.5rem;
+  font-size: var(--text-2xl);
+  margin-right: var(--space-1);
 }
 
 .nav-links {
   display: flex;
-  gap: 2rem;
+  gap: var(--space-4);
 }
 
 .nav-link {
@@ -59,7 +59,7 @@
   flex: 1;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: var(--space-4);
   width: 100%;
 }
 
@@ -69,28 +69,30 @@
 }
 
 .hero-section {
-  padding: 4rem 0;
+  padding: var(--space-8) 0;
   background: linear-gradient(135deg, var(--clr-primary-500) 0%, var(--clr-primary-700) 100%);
   color: white;
-  border-radius: 1rem;
-  margin-bottom: 3rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-lg);
 }
 
 .hero-logo {
   display: flex;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: var(--space-4);
+  animation: fadeIn var(--transition-base) ease-out;
 }
 
 .hero-logo img {
-  width: 200px;
-  height: 200px;
+  width: 160px;
+  height: 160px;
   background: white;
   border-radius: 50%;
-  padding: 20px;
+  padding: var(--space-3);
   animation: float 4s ease-in-out infinite;
   filter: drop-shadow(0 6px 12px rgba(0,0,0,0.3));
-  transition: transform 0.3s ease;
+  transition: transform var(--transition-base);
 }
 
 .hero-logo img:hover {
@@ -102,53 +104,365 @@
   50% { transform: translateY(-10px); }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .hero-title {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  margin-bottom: var(--space-2);
+  animation: fadeIn var(--transition-base) ease-out 0.1s backwards;
 }
 
 .hero-subtitle {
-  font-size: 1.25rem;
+  font-size: var(--text-lg);
   opacity: 0.9;
+  margin-bottom: var(--space-4);
+  animation: fadeIn var(--transition-base) ease-out 0.2s backwards;
+}
+
+.hero-cta {
+  animation: fadeIn var(--transition-base) ease-out 0.3s backwards;
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-base);
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.cta-button.primary {
+  background: white;
+  color: var(--clr-primary-500);
+  box-shadow: var(--shadow-md);
+}
+
+.cta-button.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.cta-button.primary:active {
+  transform: translateY(0);
 }
 
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-bottom: 3rem;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  animation: fadeIn var(--transition-slow) ease-out 0.4s backwards;
+}
+
+/* Two columns layout for AI chat and split container */
+@media (min-width: 768px) {
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  /* Ensure both containers have equal height */
+  .ai-chat-card,
+  .feature-split-container {
+    min-height: 600px;
+  }
 }
 
 .feature-card {
   background: white;
-  padding: 2rem;
-  border-radius: 1rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
   text-decoration: none;
   color: var(--clr-gray-900);
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--clr-primary-500), var(--clr-primary-300));
+  transform: scaleX(0);
+  transition: transform var(--transition-base);
+  transform-origin: left;
 }
 
 .feature-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-lg);
+}
+
+.feature-card:hover::before {
+  transform: scaleX(1);
 }
 
 .feature-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
+  font-size: var(--text-3xl);
+  margin-bottom: var(--space-2);
+  color: var(--clr-primary-500);
+  transition: transform var(--transition-base);
+}
+
+.feature-card:hover .feature-icon {
+  transform: scale(1.1);
 }
 
 .feature-card h3 {
+  font-size: var(--text-xl);
+  font-weight: 600;
   color: var(--clr-primary-500);
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--space-1);
+}
+
+.feature-card p {
+  font-size: var(--text-base);
+  color: var(--clr-gray-700);
+  line-height: 1.6;
+}
+
+/* Feature Content Styles */
+.feature-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: var(--space-2);
+}
+
+/* Gene Screening Card */
+.gene-search-input {
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  border: 2px solid var(--clr-primary-100);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-base);
+  outline: none;
+  transition: all var(--transition-base);
+}
+
+.gene-search-input:focus {
+  border-color: var(--clr-primary-500);
+}
+
+.gene-search-button {
+  padding: var(--space-2);
+  background: var(--clr-primary-500);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+}
+
+.gene-search-button:hover:not(:disabled) {
+  background: var(--clr-primary-700);
+  transform: translateY(-1px);
+}
+
+.gene-search-button:disabled {
+  background: var(--clr-gray-300);
+  cursor: not-allowed;
+}
+
+.gene-quick-tags {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-2);
+}
+
+.gene-tags {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.gene-tag {
+  padding: var(--space-1) var(--space-2);
+  background: transparent;
+  border: 1px solid var(--clr-primary-100);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  color: var(--clr-primary-500);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.gene-tag:hover {
+  background: var(--clr-primary-050);
+  border-color: var(--clr-primary-300);
+}
+
+.more-options-link {
+  font-size: var(--text-sm);
+  color: var(--clr-primary-500);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.more-options-link:hover {
+  color: var(--clr-primary-700);
+}
+
+/* Data Analysis Card */
+.primary-action-button {
+  padding: var(--space-3) var(--space-4);
+  background: var(--clr-primary-500);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  width: 100%;
+}
+
+.primary-action-button:hover {
+  background: var(--clr-primary-700);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Split Container for Gene & Data Cards */
+.feature-split-container {
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: all var(--transition-base);
+  position: relative;
+}
+
+.feature-split-container:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-lg);
+}
+
+.feature-split-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--clr-primary-500), var(--clr-primary-300));
+  transform: scaleX(0);
+  transition: transform var(--transition-base);
+  transform-origin: left;
+}
+
+.feature-split-container:hover::before {
+  transform: scaleX(1);
+}
+
+.feature-split-card {
+  flex: 1;
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+}
+
+.split-card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: var(--space-3);
+}
+
+.split-card-header svg {
+  flex-shrink: 0;
+  margin-bottom: var(--space-2);
+}
+
+.split-card-header h3 {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--clr-primary-500);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.split-card-header p {
+  font-size: var(--text-sm);
+  color: var(--clr-gray-600);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.split-card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.feature-split-divider {
+  height: 1px;
+  background: var(--clr-gray-200);
+  margin: 0 var(--space-3);
+}
+
+/* Adjust gene search styles for split layout */
+.feature-split-container .gene-search-input {
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.feature-split-container .gene-search-button {
+  width: 40px;
+  height: 40px;
+  padding: var(--space-1);
+}
+
+.feature-split-container .primary-action-button {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
 }
 
 .about-section {
   background: white;
-  padding: 2rem;
-  border-radius: 1rem;
-  margin-top: 3rem;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  margin-top: var(--space-6);
+  box-shadow: var(--shadow-md);
+  animation: fadeIn var(--transition-slow) ease-out 0.6s backwards;
+}
+
+.about-section h2 {
+  font-size: var(--text-2xl);
+  color: var(--clr-primary-500);
+  margin-bottom: var(--space-3);
+}
+
+.about-section p {
+  font-size: var(--text-base);
+  color: var(--clr-gray-700);
+  line-height: 1.8;
+  max-width: 70ch;
+  margin: 0 auto;
 }
 
 /* Gene Info Page Styles */
@@ -354,20 +668,37 @@
   background: var(--clr-primary-900);
   color: white;
   text-align: center;
-  padding: 2rem;
+  padding: var(--space-4);
   margin-top: auto;
+}
+
+.footer p {
+  font-size: var(--text-sm);
+  opacity: 0.9;
 }
 
 /* Mini Chat Styles */
 .ai-chat-card {
   display: flex;
   flex-direction: column;
-  padding: 1.5rem;
+  padding: var(--space-4);
 }
 
 .feature-header {
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-3);
+}
+
+.feature-header .feature-icon {
+  margin-bottom: var(--space-2);
+}
+
+.feature-header h3 {
+  margin-bottom: var(--space-1);
+}
+
+.feature-header p {
+  margin-bottom: 0;
 }
 
 .mini-chat {
@@ -554,17 +885,60 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
-  .hero-title {
-    font-size: 2rem;
+/* Tablet (1024px) */
+@media (max-width: 1024px) {
+  .main-content {
+    padding: var(--space-3);
+  }
+  
+  .hero-section {
+    padding: var(--space-6) var(--space-3);
   }
   
   .features-grid {
     grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+}
+
+/* Mobile (768px) */
+@media (max-width: 768px) {
+  .nav-container {
+    padding: var(--space-2);
   }
   
   .nav-links {
-    gap: 1rem;
+    gap: var(--space-2);
+  }
+  
+  .nav-link {
+    font-size: var(--text-sm);
+  }
+  
+  .hero-title {
+    font-size: var(--text-2xl);
+  }
+  
+  .hero-subtitle {
+    font-size: var(--text-base);
+  }
+  
+  .hero-logo img {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .hero-section {
+    padding: var(--space-5) var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+  
+  .feature-card {
+    padding: var(--space-3);
+  }
+  
+  .about-section {
+    padding: var(--space-4);
   }
   
   .search-section {
@@ -573,5 +947,37 @@
   
   .input-section {
     flex-direction: column;
+  }
+}
+
+/* Small Mobile (480px) */
+@media (max-width: 480px) {
+  .nav-logo {
+    font-size: var(--text-lg);
+  }
+  
+  .nav-links {
+    display: none;
+  }
+  
+  .hero-title {
+    font-size: var(--text-xl);
+  }
+  
+  .cta-button {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-sm);
+  }
+  
+  .features-grid {
+    gap: var(--space-2);
+  }
+  
+  .feature-icon {
+    font-size: var(--text-2xl);
+  }
+  
+  .feature-card h3 {
+    font-size: var(--text-lg);
   }
 }

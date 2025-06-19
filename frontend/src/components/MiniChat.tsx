@@ -51,7 +51,12 @@ const MiniChat: React.FC<MiniChatProps> = ({
         }),
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -89,11 +94,21 @@ const MiniChat: React.FC<MiniChatProps> = ({
           });
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Chat error:', error);
+      let errorMessage = '抱歉，发生了错误。';
+      
+      if (error.message?.includes('HTTP error')) {
+        errorMessage = '连接服务器失败，请检查网络连接。';
+      } else if (error.message?.includes('Failed to fetch')) {
+        errorMessage = '无法连接到服务器，请确保服务正在运行。';
+      } else if (error.message) {
+        errorMessage = `错误：${error.message}`;
+      }
+      
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: '抱歉，发生了错误。请稍后再试。'
+        content: errorMessage
       }]);
     } finally {
       setIsLoading(false);

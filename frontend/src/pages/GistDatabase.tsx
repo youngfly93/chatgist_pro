@@ -16,10 +16,15 @@ const GistDatabase: React.FC = () => {
     window.dispatchEvent(event);
   };
 
+  // Use local Shiny app if available, otherwise use remote
+  const shinyUrl = process.env.NODE_ENV === 'development' 
+    ? 'http://127.0.0.1:4964/'
+    : 'http://117.72.75.45/dbGIST_shiny/';
+
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       <iframe
-        src="http://117.72.75.45/dbGIST_shiny/"
+        src={shinyUrl}
         style={{
           width: '100%',
           height: '100%',

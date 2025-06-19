@@ -47,15 +47,52 @@ install.packages(c("httr", "jsonlite", "base64enc"))
 
 ### 2. 运行应用
 
+#### 完整项目启动（推荐）
+
+启动包含 R Shiny 数据分析功能的完整应用：
+
+```bash
+# Linux/Mac
+./start_with_shiny.sh
+
+# Windows
+start_with_shiny.bat
+
+# 或使用 npm
+npm run dev:full
+```
+
+应用将在以下端口运行：
+- 前端界面: http://localhost:5173
+- 后端API: http://localhost:8000
+- Shiny数据库: http://localhost:4964
+```bash
+# Linux/Mac
+npm run dev:full
+# 或
+./start_with_shiny.sh
+
+# Windows
+npm run dev:full:windows
+# 或
+start_with_shiny.bat
+```
+
+这将同时启动：
+- GIST_web 前端 (http://localhost:5173)
+- GIST_web 后端 (http://localhost:3000)
+- GIST_shiny 数据库 (http://127.0.0.1:4964)
+
+#### 单独运行 Shiny 应用
 ```r
 # 方法1：在 R 控制台中
-shiny::runApp()
+shiny::runApp(port = 4964)
 
-# 方法2：在 RStudio 中
-# 打开 ui.R 或 server.R，点击 "Run App" 按钮
-
-# 方法3：指定端口和主机
-shiny::runApp(port = 3838, host = "0.0.0.0")
+# 方法2：使用提供的脚本
+cd ../GIST_shiny
+./start_shiny.sh  # Linux/Mac
+# 或
+start_shiny.bat   # Windows
 ```
 
 ## 📁 数据文件

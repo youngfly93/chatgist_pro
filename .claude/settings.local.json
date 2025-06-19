@@ -14,7 +14,20 @@
       "WebFetch(domain:117.72.75.45)",
       "Bash(curl:*)",
       "Bash(npm run build:*)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "Bash(ls:*)",
+      "Bash(npm run install:all:*)",
+      "Bash(grep:*)",
+      "Bash(cp:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(find:*)",
+      "Bash(diff:*)",
+      "Bash(dos2unix:*)",
+      "Bash(sed:*)",
+      "Bash(R:*)",
+      "Bash(bash:*)"
     ],
     "deny": []
   }

@@ -107,3 +107,11 @@ coverage/
 
 # Log files
 *.log
+
+# GIST_shiny specific (when included as subdirectory)
+GIST_shiny/.Rhistory
+GIST_shiny/.RData
+GIST_shiny/*.log
+GIST_shiny/original/
+GIST_shiny/shiny.log
+GIST_shiny/nohup.out

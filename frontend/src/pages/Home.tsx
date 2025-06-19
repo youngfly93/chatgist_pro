@@ -42,7 +42,17 @@ const Home: React.FC = () => {
         </div>
         <h1 className="hero-title">GIST AI - 基因信息智能助手</h1>
         <p className="hero-subtitle">探索基因奥秘，AI赋能生命科学</p>
-        
+        <div className="hero-cta">
+          <button 
+            className="cta-button primary"
+            onClick={() => document.querySelector('.features-grid')?.scrollIntoView({ behavior: 'smooth' })}
+          >
+            立即体验
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M7 10L12 15L17 10"/>
+            </svg>
+          </button>
+        </div>
       </header>
       
       <div className="features-grid">
@@ -58,154 +68,72 @@ const Home: React.FC = () => {
           </Link>
         </div>
         
-        <div className="feature-card" style={{ cursor: 'default', display: 'flex', flexDirection: 'column' }}>
-          <Dna className="feature-icon" size={40} />
-          <h3>GIST基因筛选</h3>
-          <p>筛选GIST相关基因，使用专业检索式查看文献</p>
-          
-          {/* 快速基因搜索 */}
-          <div style={{ marginTop: '20px' }}>
-            <div style={{
-              display: 'flex',
-              gap: '8px',
-              alignItems: 'center'
-            }}>
-              <input
-                type="text"
-                value={quickGene}
-                onChange={(e) => setQuickGene(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="输入基因名称..."
-                style={{
-                  flex: 1,
-                  padding: '10px 12px',
-                  border: '1px solid #D7E4E5',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  outline: 'none',
-                  transition: 'all 0.3s ease'
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#1C484C';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#D7E4E5';
-                }}
-              />
-              <button
-                onClick={handleQuickSearch}
-                disabled={!quickGene.trim()}
-                style={{
-                  backgroundColor: quickGene.trim() ? '#1C484C' : '#ccc',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '10px 15px',
-                  fontSize: '14px',
-                  cursor: quickGene.trim() ? 'pointer' : 'not-allowed',
-                  transition: 'all 0.3s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <Microscope size={16} />
-              </button>
+        <div className="feature-split-container">
+          <div className="feature-split-card gene-screening">
+            <div className="split-card-header">
+              <Dna size={48} color="#1C484C" />
+              <h3>GIST基因筛选</h3>
+              <p>筛选GIST相关基因，使用专业检索式查看文献</p>
             </div>
-            <div style={{
-              marginTop: '10px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between'
-            }}>
+            
+            <div className="split-card-content">
               <div style={{
-                fontSize: '12px',
-                color: '#999',
                 display: 'flex',
-                alignItems: 'center',
-                gap: '5px'
+                gap: '8px',
+                alignItems: 'center'
               }}>
-                {['TP53', 'KIT', 'PDGFRA'].map((gene) => (
-                  <button
-                    key={gene}
-                    onClick={() => setQuickGene(gene)}
-                    style={{
-                      backgroundColor: 'transparent',
-                      border: '1px solid #D7E4E5',
-                      borderRadius: '4px',
-                      padding: '2px 6px',
-                      fontSize: '11px',
-                      color: '#1C484C',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#F2F7F7';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                    }}
-                  >
-                    {gene}
-                  </button>
-                ))}
+                <input
+                  type="text"
+                  value={quickGene}
+                  onChange={(e) => setQuickGene(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="输入基因名称..."
+                  className="gene-search-input"
+                />
+                <button
+                  onClick={handleQuickSearch}
+                  disabled={!quickGene.trim()}
+                  className="gene-search-button"
+                >
+                  <Microscope size={16} />
+                </button>
               </div>
-              <Link 
-                to="/gene-info"
-                style={{
-                  fontSize: '12px',
-                  color: '#1C484C',
-                  textDecoration: 'none',
-                  fontWeight: '500'
-                }}
-              >
-                更多选项 →
-              </Link>
+              <div className="gene-quick-tags">
+                <div className="gene-tags">
+                  {['TP53', 'KIT', 'PDGFRA'].map((gene) => (
+                    <button
+                      key={gene}
+                      onClick={() => setQuickGene(gene)}
+                      className="gene-tag"
+                    >
+                      {gene}
+                    </button>
+                  ))}
+                </div>
+                <Link to="/gene-info" className="more-options-link">
+                  更多选项 →
+                </Link>
+              </div>
             </div>
           </div>
 
-          {/* 分隔线 */}
-          <div style={{
-            width: '100%',
-            height: '1px',
-            backgroundColor: '#e0e0e0',
-            margin: '25px 0 20px 0'
-          }}></div>
+          <div className="feature-split-divider"></div>
 
-          {/* GIST数据分析部分 */}
-          <div style={{ marginTop: 'auto' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-              <BarChart3 size={20} color="#1C484C" />
-              <h4 style={{ margin: 0, fontSize: '16px', color: '#333' }}>GIST数据分析</h4>
+          <div className="feature-split-card data-analysis">
+            <div className="split-card-header">
+              <BarChart3 size={48} color="#1C484C" />
+              <h3>GIST数据分析</h3>
+              <p>访问GIST专业数据库，进行深度数据分析</p>
             </div>
-            <p style={{ fontSize: '14px', color: '#666', margin: '0 0 15px 0' }}>
-              访问GIST专业数据库，进行深度数据分析
-            </p>
-            <button
-              onClick={() => window.open('http://127.0.0.1:4964/', '_blank')}
-              style={{
-                backgroundColor: '#1C484C',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                padding: '12px 20px',
-                fontSize: '14px',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                width: '100%',
-                fontWeight: '500'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#163A3D';
-                e.currentTarget.style.transform = 'translateY(-1px)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#1C484C';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
-            >
-              进入数据库 →
-            </button>
+            
+            <div className="split-card-content">
+              <button
+                onClick={() => window.open(import.meta.env.VITE_SHINY_URL || 'http://127.0.0.1:4964/', '_blank')}
+                className="primary-action-button"
+              >
+                进入数据库 →
+              </button>
+            </div>
           </div>
         </div>
       </div>
