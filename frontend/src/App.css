@@ -76,6 +76,27 @@
   margin-bottom: 3rem;
 }
 
+.hero-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.hero-logo svg {
+  animation: float 4s ease-in-out infinite;
+  filter: drop-shadow(0 6px 12px rgba(0,0,0,0.3));
+  transition: transform 0.3s ease;
+}
+
+.hero-logo svg:hover {
+  transform: scale(1.05);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
 .hero-title {
   font-size: 3rem;
   margin-bottom: 1rem;

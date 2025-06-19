@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post('/', async (req, res) => {
   try {
-    const { message, stream = false } = req.body;
+    const { message, image, stream = false } = req.body;
     
     // 检查API配置
     if (!process.env.ARK_API_KEY || !process.env.ARK_API_URL) {
@@ -18,21 +18,43 @@ router.post('/', async (req, res) => {
     console.log('Calling ARK API with URL:', process.env.ARK_API_URL);
     console.log('Using model:', process.env.ARK_MODEL_ID || "deepseek-v3-250324");
     console.log('Stream mode:', stream);
+    console.log('Has image:', !!image);
+    
+    // 构建用户消息内容
+    let userContent;
+    if (image) {
+      // 如果有图片，使用多模态格式
+      userContent = [
+        {
+          type: "text",
+          text: message
+        },
+        {
+          type: "image_url",
+          image_url: {
+            url: image // base64格式的图片
+          }
+        }
+      ];
+    } else {
+      // 只有文本
+      userContent = message;
+    }
     
     const requestData = {
       model: process.env.ARK_MODEL_ID || "deepseek-v3-250324",
       messages: [
         {
           role: "system",
-          content: "你是一个专注于胃肠道间质瘤（GIST）的辅助智能助手。你的主要功能是协助用户了解和学习GIST相关知识，包括：\n\n1. GIST的基本概念和分子机制\n2. 常见的基因突变（如KIT、PDGFRA等）\n3. GIST的诊断方法和病理特征\n4. 治疗选择和药物信息\n5. 相关研究进展和文献信息\n\n请用通俗易懂的语言回答用户问题，重点提供科普性和教育性内容。如果遇到具体的医疗决策问题，请提醒用户咨询专业医生。当问题与GIST相关度较低时，可以尝试从GIST角度提供相关信息。"
+          content: "你是一个专注于胃肠道间质瘤（GIST）的辅助智能助手。你的主要功能是协助用户了解和学习GIST相关知识，包括：\n\n1. GIST的基本概念和分子机制\n2. 常见的基因突变（如KIT、PDGFRA等）\n3. GIST的诊断方法和病理特征\n4. 治疗选择和药物信息\n5. 相关研究进展和文献信息\n\n当用户上传图片时，请详细分析图表内容，包括：数据特征、趋势分析、与GIST研究的关联性、可能的临床意义等。请用通俗易懂的语言回答用户问题，重点提供科普性和教育性内容。如果遇到具体的医疗决策问题，请提醒用户咨询专业医生。当问题与GIST相关度较低时，可以尝试从GIST角度提供相关信息。"
         },
         {
           role: "user",
-          content: message
+          content: userContent
         }
       ],
       temperature: 0.7,
-      max_tokens: 1000,
+      max_tokens: 1500, // 增加token限制以支持图片分析
       stream: stream
     };
 
