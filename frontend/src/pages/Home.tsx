@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Bot, Dna, Microscope, BarChart3 } from 'lucide-react';
+import MiniChat from '../components/MiniChat';
 
 const Home: React.FC = () => {
   const [quickGene, setQuickGene] = useState('');
@@ -45,11 +46,17 @@ const Home: React.FC = () => {
       </header>
       
       <div className="features-grid">
-        <Link to="/ai-chat" className="feature-card">
-          <Bot className="feature-icon" size={40} />
-          <h3>GIST智能助手</h3>
-          <p>与AI助手对话，学习GIST相关知识</p>
-        </Link>
+        <div className="feature-card ai-chat-card">
+          <div className="feature-header">
+            <Bot className="feature-icon" size={40} />
+            <h3>GIST智能助手</h3>
+            <p>与AI助手对话，学习GIST相关知识</p>
+          </div>
+          <MiniChat height="350px" />
+          <Link to="/ai-chat" className="full-chat-link">
+            进入完整对话 →
+          </Link>
+        </div>
         
         <div className="feature-card" style={{ cursor: 'default', display: 'flex', flexDirection: 'column' }}>
           <Dna className="feature-icon" size={40} />
@@ -72,24 +79,24 @@ const Home: React.FC = () => {
                 style={{
                   flex: 1,
                   padding: '10px 12px',
-                  border: '1px solid #e0e0e0',
+                  border: '1px solid #D7E4E5',
                   borderRadius: '8px',
                   fontSize: '14px',
                   outline: 'none',
                   transition: 'all 0.3s ease'
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = '#4a90e2';
+                  e.target.style.borderColor = '#1C484C';
                 }}
                 onBlur={(e) => {
-                  e.target.style.borderColor = '#e0e0e0';
+                  e.target.style.borderColor = '#D7E4E5';
                 }}
               />
               <button
                 onClick={handleQuickSearch}
                 disabled={!quickGene.trim()}
                 style={{
-                  backgroundColor: quickGene.trim() ? '#4a90e2' : '#ccc',
+                  backgroundColor: quickGene.trim() ? '#1C484C' : '#ccc',
                   color: 'white',
                   border: 'none',
                   borderRadius: '8px',
@@ -124,16 +131,16 @@ const Home: React.FC = () => {
                     onClick={() => setQuickGene(gene)}
                     style={{
                       backgroundColor: 'transparent',
-                      border: '1px solid #e0e0e0',
+                      border: '1px solid #D7E4E5',
                       borderRadius: '4px',
                       padding: '2px 6px',
                       fontSize: '11px',
-                      color: '#4a90e2',
+                      color: '#1C484C',
                       cursor: 'pointer',
                       transition: 'all 0.2s ease'
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#f0f8ff';
+                      e.currentTarget.style.backgroundColor = '#F2F7F7';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.backgroundColor = 'transparent';
@@ -147,7 +154,7 @@ const Home: React.FC = () => {
                 to="/gene-info"
                 style={{
                   fontSize: '12px',
-                  color: '#4a90e2',
+                  color: '#1C484C',
                   textDecoration: 'none',
                   fontWeight: '500'
                 }}
@@ -168,7 +175,7 @@ const Home: React.FC = () => {
           {/* GIST数据分析部分 */}
           <div style={{ marginTop: 'auto' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-              <BarChart3 size={20} color="#4a90e2" />
+              <BarChart3 size={20} color="#1C484C" />
               <h4 style={{ margin: 0, fontSize: '16px', color: '#333' }}>GIST数据分析</h4>
             </div>
             <p style={{ fontSize: '14px', color: '#666', margin: '0 0 15px 0' }}>
@@ -177,7 +184,7 @@ const Home: React.FC = () => {
             <button
               onClick={() => window.open('http://127.0.0.1:4964/', '_blank')}
               style={{
-                backgroundColor: '#4a90e2',
+                backgroundColor: '#1C484C',
                 color: 'white',
                 border: 'none',
                 borderRadius: '8px',
@@ -189,11 +196,11 @@ const Home: React.FC = () => {
                 fontWeight: '500'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#357abd';
+                e.currentTarget.style.backgroundColor = '#163A3D';
                 e.currentTarget.style.transform = 'translateY(-1px)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#4a90e2';
+                e.currentTarget.style.backgroundColor = '#1C484C';
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
             >
