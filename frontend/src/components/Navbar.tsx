@@ -9,7 +9,16 @@ const Navbar: React.FC = () => {
     <nav className="navbar">
       <div className="nav-container">
         <Link to="/" className="nav-logo">
-          <Dna className="logo-icon" size={24} />
+          <img 
+            src="/GIST_gpt.png" 
+            alt="GIST Logo" 
+            style={{ 
+              width: '32px', 
+              height: '32px', 
+              marginRight: '8px',
+              borderRadius: '50%'
+            }} 
+          />
           <span className="logo-text">GIST AI</span>
         </Link>
         

@@ -15,4 +15,5 @@ app.use('/api/gene', geneRouter);
 app.use('/api/proxy', proxyRouter);
 
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => console.log(`Backend running on ${PORT}`));
+const HOST = '0.0.0.0'; // Listen on all network interfaces
+app.listen(PORT, HOST, () => console.log(`Backend running on ${HOST}:${PORT}`));
