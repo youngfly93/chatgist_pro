@@ -27,7 +27,9 @@
       "Bash(dos2unix:*)",
       "Bash(sed:*)",
       "Bash(R:*)",
-      "Bash(bash:*)"
+      "Bash(bash:*)",
+      "Bash(git rm:*)",
+      "Bash(rm:*)"
     ],
     "deny": []
   }

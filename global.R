@@ -301,7 +301,7 @@ dbGIST_boxplot_Risk <- function(ID,DB = dbGIST_matrix[RISK_ID]){
                 axis.text.y = element_text(size=10,
                                            #  colour = "black",
                                            face = "bold"),
-                axis.title.x = element_blank()) + stat_compare_means(method = )
+                axis.title.x = element_blank()) + stat_compare_means()
         
         p1 <- p1+p2
       } 
@@ -1512,7 +1512,9 @@ dbGIST_boxplot_Drug <- function(ID,DB = dbGIST_matrix[IM_ID]){
     
   }
   
-  return(p1+p2+p3+p4)
+  # Arrange plots in a 2x2 grid with patchwork
+  combined_plot <- (p1 + p2) / (p3 + p4)
+  return(combined_plot)
   
 }
 

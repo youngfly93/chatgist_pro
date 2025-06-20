@@ -89,7 +89,7 @@ server <- function(input, output, session) {
       paste("Gene_",input$DE_overall_vol_dataset,".pdf",sep="")
     },
     content = function(file){
-      pdf(file)
+      pdf(file, width = 12, height = 10)
       print(DE_overall_volcano_result_plot_show_tmp())
       dev.off()
     }
@@ -166,7 +166,7 @@ server <- function(input, output, session) {
   # plot
   output$DE_overall_volcano_result_plot_show_3 <- renderPlot({
     DE_overall_volcano_result_plot_show_tmp_3()
-  }, res = 96)
+  }, res = 120)
   
   # data 
   output$DE_overall_vol_result_data_panel_3 <- renderUI({
@@ -210,7 +210,7 @@ server <- function(input, output, session) {
       paste("Gene_",input$DE_overall_vol_dataset_3, "_", input$DE_overall_vol_dataset_3_1, ".pdf",sep="")
     },
     content = function(file){
-      pdf(file)
+      pdf(file, width = 14, height = 10)
       print(DE_overall_volcano_result_plot_show_tmp_3())
       dev.off()
     }
@@ -278,7 +278,7 @@ server <- function(input, output, session) {
   # plot
   output$DE_overall_volcano_result_plot_show_4 <- renderPlot({
     DE_overall_volcano_result_plot_show_tmp_4()
-  }, res = 96)
+  }, res = 120)
   
   # data 
   output$DE_overall_vol_result_data_panel_4 <- renderUI({
@@ -321,7 +321,7 @@ server <- function(input, output, session) {
       paste("Gene_",input$DE_overall_vol_dataset_4,".pdf",sep="")
     },
     content = function(file){
-      pdf(file)
+      pdf(file, width = 14, height = 10)
       print(DE_overall_volcano_result_plot_show_tmp_4())
       dev.off()
     }
@@ -389,7 +389,7 @@ server <- function(input, output, session) {
   # plot
   output$DE_overall_volcano_result_plot_show_5 <- renderPlot({
     DE_overall_volcano_result_plot_show_tmp_5()
-  }, res = 96)
+  }, res = 120)
   
   # data 
   output$DE_overall_vol_result_data_panel_5 <- renderUI({
@@ -432,7 +432,7 @@ server <- function(input, output, session) {
       paste("Gene_",input$DE_overall_vol_dataset_5,".pdf",sep="")
     },
     content = function(file){
-      pdf(file)
+      pdf(file, width = 12, height = 8)
       print(DE_overall_volcano_result_plot_show_tmp_5())
       dev.off()
     }

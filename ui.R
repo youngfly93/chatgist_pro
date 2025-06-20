@@ -270,7 +270,7 @@ dashboardPage(
                                                 align = "center",
                                                 (div(style='width:1100px;overflow-x:scroll;height:800px;overflow-y:scroll;',
                                                      plotOutput("DE_overall_volcano_result_plot_show_3",
-                                                                width = "1000px", height = "1000px") %>% withSpinner(color="#6c6689")))
+                                                                width = "1400px", height = "1000px") %>% withSpinner(color="#6c6689")))
                                          )
                                        )
                               ),
@@ -389,7 +389,7 @@ dashboardPage(
                                                 align = "center",
                                                 (div(style='width:1100px;overflow-x:scroll;height:800px;overflow-y:scroll;',
                                                      plotOutput("DE_overall_volcano_result_plot_show_4",
-                                                                width = "1000px", height = "1000px") %>% withSpinner(color="#6c6689")))
+                                                                width = "1400px", height = "1000px") %>% withSpinner(color="#6c6689")))
                                          )
                                        )
                               ),
@@ -508,7 +508,7 @@ dashboardPage(
                                                 align = "center",
                                                 (div(style='width:1100px;overflow-x:scroll;height:800px;overflow-y:scroll;',
                                                      plotOutput("DE_overall_volcano_result_plot_show_5",
-                                                                width = "1000px", height = "1000px") %>% withSpinner(color="#6c6689")))
+                                                                width = "1200px", height = "800px") %>% withSpinner(color="#6c6689")))
                                          )
                                        )
                               ),
