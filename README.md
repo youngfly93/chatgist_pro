@@ -1,197 +1,188 @@
-# dbGIST Shiny 应用 - GIST基因表达分析平台
+# ChatGIST Pro
 
-一个专注于胃肠道间质瘤（GIST）的基因表达分析平台，基于R Shiny构建，集成AI智能分析功能。
+A comprehensive AI-powered web application for GIST (Gastrointestinal Stromal Tumor) research, featuring advanced chat capabilities, R script integration, and phosphoproteomics analysis tools.
 
-## 🧬 应用概述
+## 🚀 Features
 
-这是一个**dbGIST (database GIST)** Shiny web应用，专门用于分析胃肠道间质瘤（GIST）的基因表达数据，提供交互式可视化和统计分析功能，支持GIST基因组研究。
+### AI Chat Integration
+- **Kimi AI Integration**: Advanced conversational AI for research assistance
+- **Real-time Chat**: Interactive chat interface with streaming responses
+- **Context-aware Responses**: AI understands GIST research context
 
-## ✨ 主要功能
+### R Script Integration
+- **Phosphoproteomics Analysis**: Automated R script execution for protein analysis
+- **Statistical Computing**: Advanced statistical analysis capabilities
+- **Data Visualization**: Automatic generation of scientific plots and charts
 
-### 📊 分析模块
-1. **Module2 - 单基因表达分析**：查看特定基因在不同临床分组中的表达差异（性别、年龄、风险等级等）
-2. **Module3 - 基因相关性分析**：分析两个基因之间的表达相关性，生成散点图和相关系数
-3. **Module4 - 药物耐药分析**：探索与伊马替尼（Imatinib）耐药相关的基因，包含ROC曲线分析
-4. **Module5 - 治疗前后比较**：比较治疗前后的基因表达变化，评估治疗效果
+### Analysis Tools
+- **Phospho Site Query**: Search and analyze phosphorylation sites
+- **Boxplot Analysis**: Compare tumor vs normal tissue phosphorylation levels
+- **Survival Analysis**: Generate survival curves based on phosphorylation data
+- **Interactive Visualizations**: Dynamic charts and graphs for research data
 
-### 🤖 AI功能
-- **智能图表分析**：AI自动分析当前模块生成的图表，提供统计学和生物学解读
-- **多位置AI按钮**：顶部、左下角、聊天窗口内多个AI分析入口
-- **活跃模块跟踪**：准确识别用户当前操作的模块，避免分析错误的图表
+### Modern Web Interface
+- **Responsive Design**: Mobile-friendly interface
+- **Real-time Updates**: Live data synchronization
+- **Floating Chat**: Convenient chat interface overlay
+- **Professional UI**: Clean, research-focused design
 
-## 🛠 系统要求
+## 🛠 Technology Stack
 
-- **R** (建议版本 4.0 或更高)
-- **RStudio** (可选，但推荐)
-- **足够的内存** (建议8GB+，用于加载大型基因表达数据集)
+### Frontend
+- **React 18** with TypeScript
+- **Modern CSS3** with responsive design
+- **Component-based Architecture**
 
-## 🚀 快速开始
+### Backend
+- **Node.js** with Express.js
+- **RESTful APIs** for data access
+- **R Script Integration** via child processes
+- **JSON-based Communication**
 
-### 1. 安装依赖包
+### AI & Analytics
+- **Kimi AI API** integration
+- **R Statistical Computing**
+- **Phosphoproteomics Analysis**
+- **Base64 Image Encoding** for charts
 
-在 R 控制台中运行以下命令安装所有依赖：
+## 📦 Installation
 
+### Prerequisites
+- Node.js (v16 or higher)
+- R (v4.0 or higher)
+- npm or yarn
+
+### Required R Packages
 ```r
-# 安装基础包
-install.packages(c("shiny", "bs4Dash", "shinyjs", "shinyBS", "tidyverse", 
-                   "data.table", "stringr", "ggplot2", "ggsci", "patchwork", "pROC"))
-
-# 安装Bioconductor包
-if (!require("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-BiocManager::install(c("clusterProfiler", "org.Hs.eg.db", "EnsDb.Hsapiens.v75"))
-
-# 安装AI功能相关包
-install.packages(c("httr", "jsonlite", "base64enc"))
+install.packages(c("jsonlite", "base64enc", "ggplot2"))
 ```
 
-### 2. 运行应用
+### Setup Steps
 
-#### 完整项目启动（推荐）
-
-启动包含 R Shiny 数据分析功能的完整应用：
-
+1. **Clone the repository**:
 ```bash
-# Linux/Mac
-./start_with_shiny.sh
-
-# Windows
-start_with_shiny.bat
-
-# 或使用 npm
-npm run dev:full
+git clone https://github.com/youngfly93/chatgist_pro.git
+cd chatgist_pro
 ```
 
-应用将在以下端口运行：
-- 前端界面: http://localhost:5173
-- 后端API: http://localhost:8000
-- Shiny数据库: http://localhost:4964
+2. **Install dependencies**:
 ```bash
-# Linux/Mac
-npm run dev:full
-# 或
-./start_with_shiny.sh
-
-# Windows
-npm run dev:full:windows
-# 或
-start_with_shiny.bat
+npm install
 ```
 
-这将同时启动：
-- GIST_web 前端 (http://localhost:5173)
-- GIST_web 后端 (http://localhost:3000)
-- GIST_shiny 数据库 (http://127.0.0.1:4964)
-
-#### 单独运行 Shiny 应用
-```r
-# 方法1：在 R 控制台中
-shiny::runApp(port = 4964)
-
-# 方法2：使用提供的脚本
-cd ../GIST_shiny
-./start_shiny.sh  # Linux/Mac
-# 或
-start_shiny.bat   # Windows
+3. **Configure environment**:
+```bash
+cp backend/.env.example backend/.env
+# Edit backend/.env with your API keys and configuration
 ```
 
-## 📁 数据文件
+4. **Start the application**:
+```bash
+# Start backend
+cd backend
+npm start
 
-应用需要以下数据文件（放置在 `original/` 目录）：
-- **dbGIST_matrix(2).Rdata**: 主要基因表达矩阵和临床数据
-- **dbGIST_ImmuneCell.RData**: 免疫细胞浸润数据
-- **dbGIST_msigdb.RData**: MSigDB通路数据库
-- **dbGIST_wikipathways.RData**: WikiPathways通路数据库
-- **GSE15966_20230217.CSV**: 特定GEO数据集的临床数据
+# Start frontend (in another terminal)
+cd frontend
+npm start
+```
 
-## 🎯 使用指南
+## 🔧 Configuration
 
-### 基本操作流程
-1. **选择模块**：点击左侧菜单选择分析模块（Module2-5）
-2. **输入基因**：输入标准基因符号（如 TP53, MCM7, EGFR 等）
-3. **生成图表**：点击"更新"按钮生成可视化图表
-4. **AI分析**：点击AI分析按钮获得智能解读
+### Environment Variables
+Create `backend/.env` with the following:
 
-### AI功能使用
-- **🚀 AI分析当前图表**：分析当前显示的图表
-- **💬 AI助手**：打开聊天窗口进行文字对话
-- **📁 上传图片**：在聊天窗口上传图片进行分析
+```env
+# Kimi AI Configuration
+KIMI_API_KEY=your_kimi_api_key_here
+KIMI_API_URL=https://api.moonshot.cn/v1/chat/completions
+KIMI_MODEL=kimi-k2-0711-preview
 
-## 🔧 最新修复
+# Server Configuration
+PORT=8000
+NODE_ENV=development
 
-### ✅ 已解决的问题
-- **AI模块选择错误**：修复了AI总是分析Module5图表的问题
-- **活跃模块跟踪**：新增当前活跃模块跟踪功能
-- **多位置AI按钮**：在多个位置添加AI分析按钮
+# R Script Configuration
+R_SCRIPT_PATH=../phospho_api_demo.R
+```
 
-### 🎯 修复机制
-- 系统跟踪用户在每个模块中的最后更新操作
-- AI分析优先使用当前活跃模块的图表
-- 增强调试输出，便于问题追踪
+## 📁 Project Structure
 
-## 📊 临床数据分类
+```
+chatgist_pro/
+├── frontend/                 # React frontend application
+│   ├── src/
+│   │   ├── components/      # Reusable UI components
+│   │   ├── pages/          # Page components
+│   │   └── App.tsx         # Main application component
+├── backend/                 # Node.js backend API
+│   ├── src/
+│   │   ├── routes/         # API route handlers
+│   │   ├── services/       # Business logic services
+│   │   └── index.js        # Server entry point
+│   └── test/               # Backend tests
+├── phospho_api_demo.R      # R script for phospho analysis
+├── docs/                   # Documentation files
+└── README.md              # This file
+```
 
-应用支持以下临床参数的基因表达分析：
-- **患者特征**：年龄、性别、风险等级
-- **肿瘤特征**：位置、大小、分期、分级
-- **分子特征**：突变类型、染色体位置
-- **治疗相关**：伊马替尼耐药性、治疗前后状态
-- **转移状态**：原发/转移、转移部位
+## 🧪 API Endpoints
 
-## 🔍 故障排除
+### Chat API
+- `POST /api/chat` - Send message to AI chat
 
-### 应用无法启动
-1. 确保所有依赖包都已安装
-2. 检查数据文件是否存在于 `original/` 目录
-3. 查看 R 控制台的错误信息
+### Phospho Analysis API
+- `POST /api/phospho/query` - Query phosphorylation sites
+- `POST /api/phospho/boxplot` - Generate boxplot analysis
+- `POST /api/phospho/survival` - Perform survival analysis
+- `GET /api/phospho/health` - Check service health
 
-### AI功能异常
-1. 检查网络连接
-2. 验证API密钥配置
-3. 查看控制台日志输出
+## 🔬 R Script Integration
 
-### 内存问题
-- 关闭其他应用释放内存
-- 考虑使用更高配置的服务器
+The application includes a comprehensive R script (`phospho_api_demo.R`) that provides:
 
-## 🏗 技术架构
+- **Data Processing**: Statistical analysis of phosphoproteomics data
+- **Visualization**: Automatic generation of scientific plots
+- **Export Capabilities**: Base64-encoded image output
+- **Error Handling**: Robust error management and logging
 
-### 核心组件
-- **global.R**: 加载依赖、数据和分析函数
-- **ui.R**: 使用bs4Dash框架定义仪表板布局
-- **server.R**: 处理响应式逻辑、用户交互和图表生成
-- **ai_chat_module.R**: AI聊天和图表分析功能
+## 📚 Documentation
 
-### 关键功能
-- **响应式编程**：动态更新和交互
-- **ggplot2可视化**：一致的主题和样式
-- **统计分析**：t检验、相关性分析、ROC曲线
-- **数据结构**：矩阵列表和关联临床信息
+- [Kimi AI Integration Guide](KIMI_INTEGRATION.md)
+- [Phospho Analysis Integration](PHOSPHO_INTEGRATION.md)
+- [R Script Debugging Guide](R_LOG_GUIDE.md)
+- [API Troubleshooting](KIMI_API_TROUBLESHOOTING.md)
 
-## 📈 开发计划
+## 🧪 Testing
 
-- [x] AI模块选择修复
-- [x] 多位置AI分析按钮
-- [x] 活跃模块跟踪
-- [ ] 批量基因分析
-- [ ] 数据可视化增强
-- [ ] 用户会话管理
-- [ ] 更多统计方法集成
+### Backend Tests
+```bash
+cd backend
+npm test
+```
 
-## 🤝 贡献指南
+### R Script Testing
+```bash
+Rscript --vanilla phospho_api_demo.R --function="query" --gene="KIT"
+```
 
-1. Fork 本仓库
-2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 创建 Pull Request
+### API Testing
+Use the provided test scripts in `backend/test/` directory.
 
-## 📧 技术支持
+## 🤝 Contributing
 
-- **Bug报告**: [GitHub Issues](https://github.com/youngfly93/GIST_web/issues)
-- **功能建议**: [GitHub Discussions](https://github.com/youngfly93/GIST_web/discussions)
-- **文档**: 查看 `CLAUDE.md` 了解更多技术细节
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## 📜 许可证
+## 📄 License
 
-MIT License - 详见 [LICENSE](LICENSE) 文件
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+- Kimi AI for conversational AI capabilities
+- R Community for statistical computing tools
+- React team for the excellent frontend framework
