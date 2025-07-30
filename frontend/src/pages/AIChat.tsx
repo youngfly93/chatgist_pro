@@ -5,15 +5,20 @@ import ReactMarkdown from 'react-markdown';
 interface Message {
   role: 'user' | 'assistant';
   content: string;
+  phosphoAnalysis?: {
+    status: string;
+    data?: any;
+    plot?: string;
+    message: string;
+  };
 }
 
 const AIChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [streamMode, setStreamMode] = useState(true);
 
-  const sendMessage = async (useStream: boolean = true) => {
+  const sendMessage = async () => {
     if (!input.trim()) return;
 
     const userMessage: Message = { role: 'user', content: input };
@@ -22,71 +27,8 @@ const AIChat: React.FC = () => {
     setInput('');
     setLoading(true);
 
-    if (useStream) {
-      // 流式处理
-      try {
-        const response = await fetch('http://localhost:8000/api/chat', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            message: currentInput,
-            stream: true
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const reader = response.body?.getReader();
-        const decoder = new TextDecoder();
-        
-        // 添加一个空的AI消息用于流式更新
-        let streamingMessageIndex = -1;
-        setMessages(prev => {
-          const newMessages = [...prev, { role: 'assistant', content: '' }];
-          streamingMessageIndex = newMessages.length - 1;
-          return newMessages;
-        });
-
-        if (reader) {
-          let streamingContent = '';
-          
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            
-            const chunk = decoder.decode(value);
-            streamingContent += chunk;
-            
-            // 更新流式消息内容
-            setMessages(prev => {
-              const newMessages = [...prev];
-              if (streamingMessageIndex >= 0) {
-                newMessages[streamingMessageIndex] = {
-                  role: 'assistant',
-                  content: streamingContent
-                };
-              }
-              return newMessages;
-            });
-          }
-        }
-      } catch (error: any) {
-        console.error('Stream chat error:', error);
-        const errorMessage: Message = { 
-          role: 'assistant', 
-          content: '抱歉，流式服务暂时不可用，请稍后重试。'
-        };
-        setMessages(prev => [...prev, errorMessage]);
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      // 非流式处理（原有逻辑）
-      try {
+    // 非流式模式
+    try {
         const response = await axios.post('http://localhost:8000/api/chat', {
           message: currentInput,
           stream: false
@@ -94,8 +36,15 @@ const AIChat: React.FC = () => {
         
         const aiMessage: Message = { 
           role: 'assistant', 
-          content: response.data.reply 
+          content: response.data.reply,
+          phosphoAnalysis: response.data.phosphoAnalysis
         };
+        
+        // 调试日志
+        console.log('=== AI Response ===');
+        console.log('Reply:', response.data.reply);
+        console.log('PhosphoAnalysis:', response.data.phosphoAnalysis);
+        
         setMessages(prev => [...prev, aiMessage]);
       } catch (error: any) {
         console.error('Chat error:', error);
@@ -107,9 +56,8 @@ const AIChat: React.FC = () => {
           content: errorDetails ? `${errorContent} (${errorDetails})` : errorContent
         };
         setMessages(prev => [...prev, errorMessage]);
-      } finally {
-        setLoading(false);
-      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -119,14 +67,9 @@ const AIChat: React.FC = () => {
       <p className="page-description">协助了解胃肠道间质瘤（GIST）相关知识</p>
       
       <div className="stream-toggle">
-        <label>
-          <input
-            type="checkbox"
-            checked={streamMode}
-            onChange={(e) => setStreamMode(e.target.checked)}
-          />
-          流式输出 {streamMode ? '✅' : '❌'}
-        </label>
+        <span style={{color: '#666', fontSize: '14px'}}>
+          💡 非流式模式（支持磷酸化分析）
+        </span>
       </div>
       
       <div className="chat-box">
@@ -169,6 +112,48 @@ const AIChat: React.FC = () => {
                 ) : (
                   msg.content
                 )}
+                {msg.phosphoAnalysis && (
+                  <div className="phospho-analysis-result" style={{
+                    marginTop: '1em',
+                    padding: '1em',
+                    backgroundColor: '#f0f8ff',
+                    borderRadius: '8px',
+                    border: '1px solid #e0e0e0'
+                  }}>
+                    <h4 style={{margin: '0 0 0.5em 0', color: '#1C484C'}}>磷酸化分析结果</h4>
+                    <p style={{margin: '0.5em 0'}}>{msg.phosphoAnalysis.message}</p>
+                    {msg.phosphoAnalysis.plot && (
+                      <div style={{marginTop: '1em'}}>
+                        <img 
+                          src={msg.phosphoAnalysis.plot} 
+                          alt="分析结果图表" 
+                          style={{
+                            maxWidth: '100%',
+                            borderRadius: '4px',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                          }}
+                        />
+                      </div>
+                    )}
+                    {msg.phosphoAnalysis.data && (
+                      <div style={{marginTop: '1em', fontSize: '0.9em'}}>
+                        <details>
+                          <summary style={{cursor: 'pointer', color: '#1C484C'}}>查看详细数据</summary>
+                          <pre style={{
+                            marginTop: '0.5em',
+                            padding: '0.5em',
+                            backgroundColor: '#fff',
+                            borderRadius: '4px',
+                            overflow: 'auto',
+                            fontSize: '0.85em'
+                          }}>
+                            {JSON.stringify(msg.phosphoAnalysis.data, null, 2)}
+                          </pre>
+                        </details>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -180,11 +165,11 @@ const AIChat: React.FC = () => {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && sendMessage(streamMode)}
+            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
             placeholder="输入您的GIST相关问题..."
             className="chat-input"
           />
-          <button onClick={() => sendMessage(streamMode)} disabled={loading} className="send-button">
+          <button onClick={() => sendMessage()} disabled={loading} className="send-button">
             发送
           </button>
         </div>

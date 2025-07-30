@@ -19,5 +19,8 @@
   "license": "ISC",
   "devDependencies": {
     "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "openai": "^5.10.2"
   }
 }

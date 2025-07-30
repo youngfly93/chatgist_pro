@@ -23,20 +23,14 @@ const Navbar: React.FC = () => {
         </Link>
         
         <div className="nav-links">
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
           >
             首页
           </Link>
-          <Link 
-            to="/gene-info" 
-            className={`nav-link ${location.pathname === '/gene-info' ? 'active' : ''}`}
-          >
-            基因查询
-          </Link>
-          <Link 
-            to="/ai-chat" 
+          <Link
+            to="/ai-chat"
             className={`nav-link ${location.pathname === '/ai-chat' ? 'active' : ''}`}
           >
             AI助手

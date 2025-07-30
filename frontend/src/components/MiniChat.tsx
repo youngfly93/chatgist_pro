@@ -5,6 +5,7 @@ import { Send } from 'lucide-react';
 interface Message {
   role: 'user' | 'assistant';
   content: string;
+  phosphoAnalysis?: any;
 }
 
 interface MiniChatProps {
@@ -39,7 +40,7 @@ const MiniChat: React.FC<MiniChatProps> = ({
     setIsLoading(true);
 
     try {
-      // 使用流式响应
+      // 使用非流式响应
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -47,12 +48,11 @@ const MiniChat: React.FC<MiniChatProps> = ({
         },
         body: JSON.stringify({
           message: currentInput,
-          stream: true
+          stream: false
         }),
       });
 
       console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers);
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -60,40 +60,22 @@ const MiniChat: React.FC<MiniChatProps> = ({
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
+      // 非流式响应直接解析JSON
+      const data = await response.json();
       
-      // 添加一个空的AI消息用于流式更新
-      let streamingMessageIndex = -1;
-      setMessages(prev => {
-        const newMessages = [...prev, { role: 'assistant' as const, content: '' }];
-        streamingMessageIndex = newMessages.length - 1;
-        return newMessages;
-      });
-
-      if (reader) {
-        let streamingContent = '';
-        
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          
-          const chunk = decoder.decode(value);
-          streamingContent += chunk;
-          
-          // 更新流式消息内容
-          setMessages(prev => {
-            const newMessages = [...prev];
-            if (streamingMessageIndex >= 0 && streamingMessageIndex < newMessages.length) {
-              newMessages[streamingMessageIndex] = {
-                role: 'assistant',
-                content: streamingContent
-              };
-            }
-            return newMessages;
-          });
-        }
-      }
+      // 添加AI消息
+      const aiMessage = {
+        role: 'assistant' as const,
+        content: data.reply || '抱歉，没有收到有效回复。',
+        phosphoAnalysis: data.phosphoAnalysis
+      };
+      
+      // 调试日志
+      console.log('=== MiniChat AI Response ===');
+      console.log('Reply:', data.reply);
+      console.log('PhosphoAnalysis:', data.phosphoAnalysis);
+      
+      setMessages(prev => [...prev, aiMessage]);
     } catch (error: any) {
       console.error('Chat error:', error);
       let errorMessage = '抱歉，发生了错误。';
@@ -128,7 +110,37 @@ const MiniChat: React.FC<MiniChatProps> = ({
             <div key={index} className={`mini-message ${message.role}`}>
               <div className="mini-message-content">
                 {message.role === 'assistant' ? (
-                  <ReactMarkdown>{message.content}</ReactMarkdown>
+                  <>
+                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                    {message.phosphoAnalysis && (
+                      <div style={{
+                        marginTop: '10px',
+                        padding: '10px',
+                        backgroundColor: '#f0f8ff',
+                        borderRadius: '6px',
+                        border: '1px solid #e0e0e0',
+                        fontSize: '0.9em'
+                      }}>
+                        <strong style={{color: '#1C484C'}}>磷酸化分析结果</strong>
+                        <p style={{margin: '5px 0'}}>{message.phosphoAnalysis.message}</p>
+                        {message.phosphoAnalysis.data && (
+                          <details style={{marginTop: '5px'}}>
+                            <summary style={{cursor: 'pointer', color: '#1C484C'}}>查看详细数据</summary>
+                            <pre style={{
+                              marginTop: '5px',
+                              padding: '5px',
+                              backgroundColor: '#fff',
+                              borderRadius: '4px',
+                              overflow: 'auto',
+                              fontSize: '0.85em'
+                            }}>
+                              {JSON.stringify(message.phosphoAnalysis.data, null, 2)}
+                            </pre>
+                          </details>
+                        )}
+                      </div>
+                    )}
+                  </>
                 ) : (
                   message.content
                 )}

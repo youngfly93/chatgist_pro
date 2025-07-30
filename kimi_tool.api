@@ -1,0 +1,92 @@
+Tool Use
+Mastering the use of tools is a key hallmark of intelligence, and the Kimi large language model is no exception. Tool Use or Function Calling is a crucial feature of the Kimi large language model. When invoking the API to use the model service, you can describe tools or functions in the Messages, and the Kimi large language model will intelligently select and output a JSON object containing the parameters required to call one or more functions, thus enabling the Kimi large language model to link and utilize external tools.
+
+Here is a simple example of tool invocation:
+
+{
+  "model": "kimi-k2-0711-preview",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Determine whether 3214567 is a prime number through programming."
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "CodeRunner",
+        "description": "A code executor that supports running Python and JavaScript code",
+        "parameters": {
+          "properties": {
+            "language": {
+              "type": "string",
+              "enum": ["python", "javascript"]
+            },
+            "code": {
+              "type": "string",
+              "description": "The code is written here"
+            }
+          },
+          "type": "object"
+        }
+      }
+    }
+  ]
+}
+
+A diagram of the example above
+
+In the tools field, we can add a list of optional tools.
+
+Each tool in the list must include a type. Within the function structure, we need to include a name (which should follow this regular expression as a specification: ^[a-zA-Z_][a-zA-Z0-9-_]63$). A name that is an easily understandable English word is more likely to be accepted by the model. There should also be a description or enum. The description part explains what the tool can do, which helps the model to make judgments and selections. The function structure must have a parameters field. The root of parameters must be an object, and the content is a subset of JSON schema (we will provide specific documentation to introduce the technical details later). The number of functions in tools currently cannot exceed 128.
+
+Like other APIs, we can call it through the Chat API.
+
+const OpenAI = require("openai");
+ 
+const client = new OpenAI({
+    apiKey: "$MOONSHOT_API_KEY",
+    baseURL: "https://api.moonshot.ai/v1",
+});
+ 
+async function main() {
+    const completion = await client.chat.completions.create({
+        model: "kimi-k2-0711-preview",         
+        "messages": [
+            {"role": "system", "content": "You are Kimi, an AI assistant provided by Moonshot AI, who is more proficient in Chinese and English conversations. You will provide users with safe, helpful, and accurate answers. At the same time, you will reject any questions involving terrorism, racism, pornography, and violence. Moonshot AI is a proper noun and should not be translated into other languages."},
+            {"role": "user", "content": "Determine whether 3214567 is a prime number through programming."}
+        ],
+        "tools": [{
+            "type": "function",
+            "function": {
+                "name": "CodeRunner",
+                "description": "A code executor that supports running Python and JavaScript code",
+                "parameters": {
+                    "properties": {
+                        "language": {
+                            "type": "string",
+                            "enum": ["python", "javascript"]
+                        },
+                        "code": {
+                            "type": "string",
+                            "description": "The code is written here"
+                        }
+                    },
+                "type": "object"
+                }
+            }
+        }],
+        "temperature": 0.6
+    });
+    console.log(completion.choices[0].message);
+}
+ 
+main();
+
+Tool Configuration
+You can also use some Agent platforms such as Coze, Bisheng, Dify, and LangChain to create and manage these tools, and design more complex workflows in conjunction with the Kimi large language model.
+
+Last updated on July 21, 2025
+Chat
+Partial Mode

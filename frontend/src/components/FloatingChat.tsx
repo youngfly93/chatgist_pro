@@ -15,7 +15,7 @@ const FloatingChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [streamMode, setStreamMode] = useState(true);
+  const [streamMode, setStreamMode] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [capturing, setCapturing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -234,7 +234,7 @@ const FloatingChat: React.FC = () => {
           body: JSON.stringify({
             message: analysisPrompt,
             image: base64Image,
-            stream: true
+            stream: false
           }),
         });
 
@@ -321,7 +321,7 @@ const FloatingChat: React.FC = () => {
           },
           body: JSON.stringify({
             message: currentInput,
-            stream: true
+            stream: false
           }),
         });
 

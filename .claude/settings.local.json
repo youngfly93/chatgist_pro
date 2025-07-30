@@ -29,7 +29,8 @@
       "Bash(R:*)",
       "Bash(bash:*)",
       "Bash(git rm:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(touch:*)"
     ],
     "deny": []
   }

@@ -163,15 +163,10 @@
   animation: fadeIn var(--transition-slow) ease-out 0.4s backwards;
 }
 
-/* Two columns layout for AI chat and split container */
+/* Responsive layout for single feature */
 @media (min-width: 768px) {
-  .features-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  /* Ensure both containers have equal height */
-  .ai-chat-card,
-  .feature-split-container {
+  .ai-chat-card-single {
+    max-width: 1200px;
     min-height: 600px;
   }
 }
@@ -682,6 +677,23 @@
   display: flex;
   flex-direction: column;
   padding: var(--space-4);
+}
+
+/* Single Feature Container */
+.single-feature-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-6);
+  animation: fadeIn var(--transition-slow) ease-out 0.4s backwards;
+}
+
+.ai-chat-card-single {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4);
+  max-width: 1200px;
+  width: 100%;
+  min-height: 500px;
 }
 
 .feature-header {

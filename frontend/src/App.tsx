@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
-import GeneInfo from './pages/GeneInfo';
 import AIChat from './pages/AIChat';
 import './App.css';
 
@@ -13,7 +12,6 @@ function App() {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/gene-info" element={<GeneInfo />} />
             <Route path="/ai-chat" element={<AIChat />} />
           </Routes>
         </main>

@@ -108,6 +108,9 @@ coverage/
 # Log files
 *.log
 
+# GIST_shiny project (excluded from chatgist_pro)
+GIST_shiny/
+
 # GIST_shiny specific (when included as subdirectory)
 GIST_shiny/.Rhistory
 GIST_shiny/.RData
