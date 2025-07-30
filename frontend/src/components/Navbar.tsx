@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Dna } from 'lucide-react';
+// import { Dna } from 'lucide-react'; // 暂时注释掉未使用的导入
 
 const Navbar: React.FC = () => {
   const location = useLocation();

@@ -84,6 +84,38 @@ router.post('/survival', async (req, res) => {
   }
 });
 
+// 综合分析 - 对单个基因执行所有分析
+router.post('/comprehensive', async (req, res) => {
+  try {
+    const { gene } = req.body;
+
+    if (!gene) {
+      return res.status(400).json({
+        error: '缺少必需参数: gene'
+      });
+    }
+
+    console.log(`综合分析请求: ${gene}`);
+
+    // 直接调用 phosphoService 的综合分析功能
+    const result = await phosphoService.analyze({
+      function: 'comprehensive',
+      gene: gene
+    });
+    
+    console.log(`综合分析完成: ${gene}, 状态: ${result.status}`);
+    
+    res.json(result);
+    
+  } catch (error) {
+    console.error('综合分析错误:', error);
+    res.status(500).json({
+      error: '综合分析失败',
+      details: error.message
+    });
+  }
+});
+
 // 健康检查
 router.get('/health', (req, res) => {
   res.json({ 

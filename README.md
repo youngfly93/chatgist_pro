@@ -67,24 +67,39 @@ cd chatgist_pro
 
 2. **Install dependencies**:
 ```bash
-npm install
+# Install all dependencies for both frontend and backend
+npm run install:all
 ```
 
-3. **Configure environment**:
+3. **Configure data files**:
+```bash
+# Create the GIST_Phosphoproteomics directory
+mkdir -p GIST_Phosphoproteomics
+```
+
+**Important**: You need to obtain and place the following data files in the `GIST_Phosphoproteomics/` directory:
+- `Phosphoproteomics_list.RDS` - Contains phosphoproteomics data
+- `Proteomics_ID_Pathway_list.RDS` - Contains pathway analysis data
+
+These files are not included in the repository due to size constraints. Contact the project maintainers for access to these data files.
+
+4. **Configure environment**:
 ```bash
 cp backend/.env.example backend/.env
 # Edit backend/.env with your API keys and configuration
 ```
 
-4. **Start the application**:
+5. **Start the application**:
 ```bash
-# Start backend
-cd backend
-npm start
+# Start both frontend and backend
+npm run dev
 
-# Start frontend (in another terminal)
-cd frontend
-npm start
+# Or start them separately:
+# Backend (port 8000)
+cd backend && npm run dev
+
+# Frontend (port 5173) - in another terminal
+cd frontend && npm run dev
 ```
 
 ## 🔧 Configuration

@@ -1,9 +1,8 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import FloatingChat from '../components/FloatingChat';
 import SmartCapture from '../components/SmartCapture';
 
 const GistDatabase: React.FC = () => {
-  const floatingChatRef = useRef<any>(null);
 
   // 处理智能截图
   const handleSmartCapture = (imageData: string) => {
@@ -17,7 +16,7 @@ const GistDatabase: React.FC = () => {
   };
 
   // Use local Shiny app if available, otherwise use remote
-  const shinyUrl = process.env.NODE_ENV === 'development' 
+  const shinyUrl = import.meta.env.DEV 
     ? 'http://127.0.0.1:4964/'
     : 'http://117.72.75.45/dbGIST_shiny/';
 
@@ -37,7 +36,7 @@ const GistDatabase: React.FC = () => {
       <SmartCapture onCapture={handleSmartCapture} />
       
       {/* 浮动AI助手 */}
-      <FloatingChat ref={floatingChatRef} />
+      <FloatingChat />
     </div>
   );
 };

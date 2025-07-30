@@ -30,7 +30,9 @@
       "Bash(bash:*)",
       "Bash(git rm:*)",
       "Bash(rm:*)",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(node:*)",
+      "Bash(mv:*)"
     ],
     "deny": []
   }

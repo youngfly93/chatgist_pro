@@ -2,21 +2,45 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 
+interface PhosphoAnalysis {
+  status: string;
+  data?: any;
+  plot?: string;
+  message: string;
+  description?: string;
+}
+
+interface ComprehensiveAnalysis {
+  status: string;
+  message: string;
+  gene: string;
+  analyses: {
+    [key: string]: PhosphoAnalysis;
+  };
+  summary: {
+    total: number;
+    successful: number;
+    failed: number;
+    warnings: number;
+  };
+  data?: any;
+}
+
 interface Message {
   role: 'user' | 'assistant';
   content: string;
-  phosphoAnalysis?: {
-    status: string;
-    data?: any;
-    plot?: string;
-    message: string;
-  };
+  phosphoAnalysis?: PhosphoAnalysis | ComprehensiveAnalysis;
 }
 
 const AIChat: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // 判断是否为综合分析
+  const isComprehensiveAnalysis = (analysis: PhosphoAnalysis | ComprehensiveAnalysis): analysis is ComprehensiveAnalysis => {
+    return 'analyses' in analysis && 'summary' in analysis;
+  };
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -120,37 +144,142 @@ const AIChat: React.FC = () => {
                     borderRadius: '8px',
                     border: '1px solid #e0e0e0'
                   }}>
-                    <h4 style={{margin: '0 0 0.5em 0', color: '#1C484C'}}>磷酸化分析结果</h4>
-                    <p style={{margin: '0.5em 0'}}>{msg.phosphoAnalysis.message}</p>
-                    {msg.phosphoAnalysis.plot && (
-                      <div style={{marginTop: '1em'}}>
-                        <img 
-                          src={msg.phosphoAnalysis.plot} 
-                          alt="分析结果图表" 
-                          style={{
-                            maxWidth: '100%',
-                            borderRadius: '4px',
-                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                          }}
-                        />
-                      </div>
-                    )}
-                    {msg.phosphoAnalysis.data && (
-                      <div style={{marginTop: '1em', fontSize: '0.9em'}}>
-                        <details>
-                          <summary style={{cursor: 'pointer', color: '#1C484C'}}>查看详细数据</summary>
-                          <pre style={{
-                            marginTop: '0.5em',
-                            padding: '0.5em',
-                            backgroundColor: '#fff',
-                            borderRadius: '4px',
-                            overflow: 'auto',
-                            fontSize: '0.85em'
-                          }}>
-                            {JSON.stringify(msg.phosphoAnalysis.data, null, 2)}
-                          </pre>
-                        </details>
-                      </div>
+                    {isComprehensiveAnalysis(msg.phosphoAnalysis) ? (
+                      // 综合分析显示
+                      (() => {
+                        const comprehensiveAnalysis = msg.phosphoAnalysis as ComprehensiveAnalysis;
+                        return (
+                          <div>
+                            <h4 style={{margin: '0 0 0.5em 0', color: '#1C484C'}}>
+                              {comprehensiveAnalysis.gene} 基因综合磷酸化分析结果
+                            </h4>
+                            <div style={{
+                              marginBottom: '1em',
+                              padding: '0.5em',
+                              backgroundColor: '#e8f5e8',
+                              borderRadius: '4px',
+                              border: '1px solid #d4edda'
+                            }}>
+                              <strong>分析概览：</strong>
+                              <span style={{marginLeft: '0.5em'}}>
+                                总计 {comprehensiveAnalysis.summary.total} 项分析，
+                                成功 {comprehensiveAnalysis.summary.successful} 项，
+                                警告 {comprehensiveAnalysis.summary.warnings} 项，
+                                失败 {comprehensiveAnalysis.summary.failed} 项
+                              </span>
+                            </div>
+                            
+                            {Object.entries(comprehensiveAnalysis.analyses).map(([analysisType, analysis]) => {
+                              const typedAnalysis = analysis as PhosphoAnalysis;
+                              return (
+                                <div key={analysisType} style={{
+                                  marginBottom: '1.5em',
+                                  padding: '1em',
+                                  backgroundColor: '#fff',
+                                  borderRadius: '6px',
+                                  border: '1px solid #e0e0e0'
+                                }}>
+                                  <h5 style={{
+                                    margin: '0 0 0.5em 0',
+                                    color: '#2c3e50',
+                                    display: 'flex',
+                                    alignItems: 'center'
+                                  }}>
+                                    <span style={{
+                                      display: 'inline-block',
+                                      width: '8px',
+                                      height: '8px',
+                                      borderRadius: '50%',
+                                      backgroundColor: typedAnalysis.status === 'success' ? '#28a745' : 
+                                                     typedAnalysis.status === 'warning' ? '#ffc107' : '#dc3545',
+                                      marginRight: '0.5em'
+                                    }}></span>
+                                    {typedAnalysis.description || analysisType}
+                                  </h5>
+                                  <p style={{margin: '0.5em 0', fontSize: '0.9em', color: '#666'}}>
+                                    {typedAnalysis.message}
+                                  </p>
+                                  
+                                  {typedAnalysis.plot && (
+                                    <div style={{marginTop: '1em'}}>
+                                      <img 
+                                        src={typedAnalysis.plot} 
+                                        alt={`${typedAnalysis.description || analysisType} 分析图表`}
+                                        style={{
+                                          maxWidth: '100%',
+                                          borderRadius: '4px',
+                                          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                        }}
+                                      />
+                                    </div>
+                                  )}
+                                  
+                                  {typedAnalysis.data && (
+                                    <div style={{marginTop: '1em', fontSize: '0.9em'}}>
+                                      <details>
+                                        <summary style={{cursor: 'pointer', color: '#1C484C'}}>
+                                          查看 {typedAnalysis.description || analysisType} 详细数据
+                                        </summary>
+                                        <pre style={{
+                                          marginTop: '0.5em',
+                                          padding: '0.5em',
+                                          backgroundColor: '#f8f9fa',
+                                          borderRadius: '4px',
+                                          overflow: 'auto',
+                                          fontSize: '0.85em'
+                                        }}>
+                                          {JSON.stringify(typedAnalysis.data, null, 2)}
+                                        </pre>
+                                      </details>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        );
+                      })()
+                    ) : (
+                      // 单个分析显示（原有逻辑）
+                      (() => {
+                        const singleAnalysis = msg.phosphoAnalysis as PhosphoAnalysis;
+                        return (
+                          <div>
+                            <h4 style={{margin: '0 0 0.5em 0', color: '#1C484C'}}>磷酸化分析结果</h4>
+                            <p style={{margin: '0.5em 0'}}>{singleAnalysis.message}</p>
+                            {singleAnalysis.plot && (
+                              <div style={{marginTop: '1em'}}>
+                                <img 
+                                  src={singleAnalysis.plot} 
+                                  alt="分析结果图表" 
+                                  style={{
+                                    maxWidth: '100%',
+                                    borderRadius: '4px',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                  }}
+                                />
+                              </div>
+                            )}
+                            {singleAnalysis.data && (
+                              <div style={{marginTop: '1em', fontSize: '0.9em'}}>
+                                <details>
+                                  <summary style={{cursor: 'pointer', color: '#1C484C'}}>查看详细数据</summary>
+                                  <pre style={{
+                                    marginTop: '0.5em',
+                                    padding: '0.5em',
+                                    backgroundColor: '#fff',
+                                    borderRadius: '4px',
+                                    overflow: 'auto',
+                                    fontSize: '0.85em'
+                                  }}>
+                                    {JSON.stringify(singleAnalysis.data, null, 2)}
+                                  </pre>
+                                </details>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()
                     )}
                   </div>
                 )}

@@ -4,6 +4,8 @@
 .RData
 .Rhistory
 .Rproj.user
+*.RDS
+*.rds
 
 # MacOS files
 .DS_Store
