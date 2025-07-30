@@ -18,7 +18,9 @@ A comprehensive AI-powered web application for GIST (Gastrointestinal Stromal Tu
 - **Phospho Site Query**: Search and analyze phosphorylation sites
 - **Boxplot Analysis**: Compare tumor vs normal tissue phosphorylation levels
 - **Survival Analysis**: Generate survival curves based on phosphorylation data
+- **Comprehensive Analysis**: Multi-dimensional analysis combining 9 different analytical approaches
 - **Interactive Visualizations**: Dynamic charts and graphs for research data
+- **AI-Driven Insights**: Intelligent analysis recommendations and interpretations
 
 ### Modern Web Interface
 - **Responsive Design**: Mobile-friendly interface
@@ -57,7 +59,48 @@ A comprehensive AI-powered web application for GIST (Gastrointestinal Stromal Tu
 install.packages(c("jsonlite", "base64enc", "ggplot2"))
 ```
 
-### Setup Steps
+### Quick Deployment (Complete Setup)
+
+**完整部署流程 - 一步到位：**
+
+1. **Clone main project**:
+```bash
+git clone https://github.com/youngfly93/chatgist_pro.git
+cd chatgist_pro
+```
+
+2. **Clone GIST_Phosphoproteomics subproject** (contains all data and analysis modules):
+```bash
+git clone https://github.com/youngfly93/GIST_Phosphoproteomics.git
+```
+
+3. **Install all dependencies**:
+```bash
+# Install all dependencies for both frontend and backend
+npm run install:all
+```
+
+4. **Configure environment**:
+```bash
+cp backend/.env.example backend/.env
+# Edit backend/.env with your API keys:
+# - KIMI_API_KEY=your_kimi_api_key_here
+```
+
+5. **Start the complete application**:
+```bash
+# Start both frontend and backend
+npm run dev
+```
+
+**🎉 That's it! Your application is ready at:**
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:8000
+- Complete phosphoproteomics analysis with AI chat integration
+
+---
+
+### Manual Setup Steps (Alternative)
 
 1. **Clone the repository**:
 ```bash
@@ -81,7 +124,7 @@ mkdir -p GIST_Phosphoproteomics
 - `Phosphoproteomics_list.RDS` - Contains phosphoproteomics data
 - `Proteomics_ID_Pathway_list.RDS` - Contains pathway analysis data
 
-These files are not included in the repository due to size constraints. Contact the project maintainers for access to these data files.
+These files are available in the separate GIST_Phosphoproteomics repository for complete functionality.
 
 4. **Configure environment**:
 ```bash
@@ -127,19 +170,41 @@ R_SCRIPT_PATH=../phospho_api_demo.R
 chatgist_pro/
 ├── frontend/                 # React frontend application
 │   ├── src/
-│   │   ├── components/      # Reusable UI components
-│   │   ├── pages/          # Page components
+│   │   ├── components/      # Reusable UI components (MiniChat, Navbar)
+│   │   ├── pages/          # Page components (AIChat, GistDatabase)
 │   │   └── App.tsx         # Main application component
 ├── backend/                 # Node.js backend API
 │   ├── src/
-│   │   ├── routes/         # API route handlers
+│   │   ├── routes/         # API route handlers (chat, phospho, proxy)
 │   │   ├── services/       # Business logic services
 │   │   └── index.js        # Server entry point
 │   └── test/               # Backend tests
-├── phospho_api_demo.R      # R script for phospho analysis
-├── docs/                   # Documentation files
+├── GIST_Phosphoproteomics/  # R Shiny analysis modules (subproject)
+│   ├── modules/            # Analysis modules (AI chat, survival, etc.)
+│   ├── *.RDS               # Phosphoproteomics data files
+│   ├── app.R               # Shiny application entry
+│   └── start_*.R           # Deployment scripts
+├── phospho_api_demo.R      # R script for API integration
+├── phospho_api_adapter.R   # R script adapter for comprehensive analysis
 └── README.md              # This file
 ```
+
+### Key Components:
+
+**Frontend (React + TypeScript)**
+- Modern responsive web interface
+- AI chat integration with comprehensive analysis display
+- Real-time phosphoproteomics visualization
+
+**Backend (Node.js + Express)**
+- RESTful API for AI chat and data analysis
+- R script integration for statistical computing
+- Comprehensive analysis orchestration
+
+**GIST_Phosphoproteomics (R Shiny)**
+- Independent R Shiny application for detailed analysis
+- Complete phosphoproteomics dataset and analysis modules
+- Deployable as standalone research tool
 
 ## 🧪 API Endpoints
 
@@ -150,7 +215,19 @@ chatgist_pro/
 - `POST /api/phospho/query` - Query phosphorylation sites
 - `POST /api/phospho/boxplot` - Generate boxplot analysis
 - `POST /api/phospho/survival` - Perform survival analysis
+- `POST /api/phospho/comprehensive` - Comprehensive multi-analysis for single gene
 - `GET /api/phospho/health` - Check service health
+
+### Comprehensive Analysis Features
+
+The comprehensive analysis system performs 9 different types of analyses for a single gene:
+
+1. **Basic Query** - Phosphorylation site information
+2. **Tumor vs Normal** - Statistical comparison (3 variants: basic, detailed, violin plots)
+3. **Survival Analysis** - Kaplan-Meier curves (3 variants: basic, detailed, risk groups)  
+4. **Boxplot Analysis** - Distribution comparison (2 variants: standard, grouped)
+
+**AI Integration**: Simply ask "KIT基因全面分析" or "comprehensive analysis for KIT gene" in the chat interface to trigger automatic comprehensive analysis with all visualizations displayed inline.
 
 ## 🔬 R Script Integration
 
