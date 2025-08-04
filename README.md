@@ -56,7 +56,7 @@ A comprehensive AI-powered web application for GIST (Gastrointestinal Stromal Tu
 
 ### Required R Packages
 ```r
-install.packages(c("jsonlite", "base64enc", "ggplot2"))
+install.packages(c("jsonlite", "base64enc", "ggplot2", "plumber"))
 ```
 
 ### Quick Deployment (Complete Setup)

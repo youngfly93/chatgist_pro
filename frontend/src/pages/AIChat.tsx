@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
+import { LoaderThree } from '../components/ui/loader';
 
 interface PhosphoAnalysis {
   status: string;
@@ -8,6 +9,32 @@ interface PhosphoAnalysis {
   plot?: string;
   message: string;
   description?: string;
+}
+
+interface TranscriptomeAnalysis {
+  status: string;
+  data?: any;
+  plot?: string;
+  message: string;
+  description?: string;
+  correlation_stats?: any;
+  roc_stats?: any;
+}
+
+interface SingleCellAnalysis {
+  status: string;
+  data?: any;
+  image_base64?: string;
+  message: string;
+  description?: string;
+  gene?: string;
+  dataset?: string;
+  cell_types?: string[];
+  plot_type?: string;
+  summary?: string;
+  hasData?: boolean;
+  hasPlot?: boolean;
+  hasAnalyses?: boolean;
 }
 
 interface ComprehensiveAnalysis {
@@ -30,6 +57,8 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   phosphoAnalysis?: PhosphoAnalysis | ComprehensiveAnalysis;
+  transcriptomeAnalysis?: TranscriptomeAnalysis;
+  singleCellAnalysis?: SingleCellAnalysis;
 }
 
 const AIChat: React.FC = () => {
@@ -55,7 +84,7 @@ const AIChat: React.FC = () => {
     try {
         const response = await axios.post('http://localhost:8000/api/chat', {
           message: currentInput,
-          stream: false
+          sessionId: 'default'
         });
         
         const aiMessage: Message = { 
@@ -72,12 +101,21 @@ const AIChat: React.FC = () => {
         setMessages(prev => [...prev, aiMessage]);
       } catch (error: any) {
         console.error('Chat error:', error);
-        const errorContent = error.response?.data?.error || '抱歉，服务暂时不可用，请稍后重试。';
+        let errorContent = '抱歉，服务暂时不可用，请稍后重试。';
+        
+        if (error.code === 'ERR_NETWORK') {
+          errorContent = '连接服务器失败，请检查网络连接。';
+        } else if (error.code === 'ECONNABORTED') {
+          errorContent = '请求超时，请稍后重试。AI 正在处理复杂的分析任务，可能需要更多时间。';
+        } else if (error.response?.data?.error) {
+          errorContent = error.response.data.error;
+        }
+        
         const errorDetails = error.response?.data?.details;
         
         const errorMessage: Message = { 
           role: 'assistant', 
-          content: errorDetails ? `${errorContent} (${errorDetails})` : errorContent
+          content: errorDetails ? `${errorContent}\n\n详细信息：${errorDetails}` : errorContent
         };
         setMessages(prev => [...prev, errorMessage]);
     } finally {
@@ -286,7 +324,20 @@ const AIChat: React.FC = () => {
               </div>
             </div>
           ))}
-          {loading && <div className="loading">AI正在思考...</div>}
+          {loading && (
+            <div className="loading" style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '15px',
+              backgroundColor: '#f8f9fa',
+              borderRadius: '8px',
+              margin: '10px 0'
+            }}>
+              <LoaderThree />
+              <span>AI正在思考...</span>
+            </div>
+          )}
         </div>
         
         <div className="input-section">
@@ -294,7 +345,7 @@ const AIChat: React.FC = () => {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+            onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
             placeholder="输入您的GIST相关问题..."
             className="chat-input"
           />
