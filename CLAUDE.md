@@ -7,9 +7,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ChatGIST Pro is an AI-powered web application for GIST (Gastrointestinal Stromal Tumor) research that combines:
 - **React Frontend**: Modern TypeScript UI with responsive design and AI chat integration
 - **Node.js Backend**: Express API server with dual AI service support and tool calling architecture
-- **Triple R Analytics**: Phosphoproteomics + Transcriptomics + Single-cell RNA-seq analysis via Plumber APIs and command-line scripts
+- **Quad R Analytics**: Phosphoproteomics + Transcriptomics + Single-cell RNA-seq + Proteomics analysis via Plumber APIs and command-line scripts
 - **AI Services**: Kimi AI (primary) + Volcano Engine ARK API (DeepSeek v3) with tool calling capabilities
-- **Multi-Domain Analysis**: Comprehensive GIST research covering protein modifications, gene expression, and cellular heterogeneity
+- **Multi-Domain Analysis**: Comprehensive GIST research covering protein modifications, gene expression, cellular heterogeneity, and protein abundance
 - **Shiny Integration**: Optional R Shiny applications for advanced analysis (`GIST_Phosphoproteomics/`, `GIST_Transcriptome/`)
 - **Single-cell Analysis**: Three datasets (In-house, GSE254762, GSE162115) with UMAP visualization and cell type profiling
 
@@ -24,7 +24,8 @@ npm run install:all
 npm run dev
 
 # Complete stack with Plumber APIs (recommended for full functionality)
-start_all_with_singlecell.bat     # Windows - All services including single-cell (LATEST)
+start_all_with_proteomics.bat     # Windows - All services including proteomics (LATEST - 4 dimensions)
+start_all_with_singlecell.bat     # Windows - All services including single-cell
 start_all_with_transcriptome.bat  # Windows - All services including transcriptome  
 start_all_services.bat            # Windows - All services
 start_with_shiny.bat              # Windows - With optional Shiny apps
@@ -39,6 +40,7 @@ start.bat                         # Windows basic
 - **Phospho Plumber API**: http://localhost:8001 (R analytics for phosphoproteomics)
 - **Transcriptome Plumber API**: http://localhost:8002 (R analytics for transcriptomics)
 - **Single-cell Plumber API**: http://localhost:8003 (R analytics for single-cell RNA-seq)
+- **Proteomics Plumber API**: http://localhost:8004 (R analytics for proteomics)
 - **API Documentation**: Available at `__docs__/` endpoint for each Plumber API
 
 ### Development Commands
@@ -180,6 +182,15 @@ chatgist_pro/
 - `GET /api/singlecell/health` - Check single-cell service health
 - `GET /api/singlecell/datasets` - Available datasets information
 
+### Proteomics Analysis API
+- `POST /api/proteomics/query` - Query protein expression and basic information
+- `POST /api/proteomics/boxplot` - Clinical feature boxplot analysis (11 types)
+- `POST /api/proteomics/correlation` - Protein-protein correlation analysis
+- `POST /api/proteomics/drug_resistance` - Imatinib resistance prediction analysis
+- `POST /api/proteomics/comprehensive` - Multi-dimensional proteomics analysis
+- `POST /api/proteomics/batch` - Batch analysis for tool calling
+- `GET /api/proteomics/health` - Check proteomics service health
+
 ### Proxy API
 - `POST /api/proxy/chat` - Alternative chat endpoint
 
@@ -212,11 +223,14 @@ TRANSCRIPTOME_PLUMBER_ENABLED=true
 TRANSCRIPTOME_PLUMBER_URL=http://localhost:8002
 SINGLECELL_PLUMBER_ENABLED=true
 SINGLECELL_PLUMBER_URL=http://localhost:8003
+PROTEOMICS_PLUMBER_ENABLED=true
+PROTEOMICS_PLUMBER_URL=http://localhost:8004
 
 # R Script Configuration (Fallback)
 R_SCRIPT_PATH=../phospho_api_demo.R
 TRANSCRIPTOME_SCRIPT_PATH=../transcriptome_plumber_api.R
 SINGLECELL_SCRIPT_PATH=../singlecell_api_adapter.R
+PROTEOMICS_SCRIPT_PATH=../proteomics_api_adapter.R
 ```
 
 ### Frontend Configuration
@@ -358,6 +372,14 @@ install.packages(c("Seurat", "patchwork", "ggsci", "stringr"))
 - Cell type identification and annotation
 - Gene expression overlay on UMAP coordinates
 - Multi-dataset analysis (In-house, GSE254762, GSE162115)
+
+**Proteomics Analysis**:
+- Protein expression profiling across 11 clinical features
+- Tumor vs Normal tissue protein abundance analysis
+- Clinical correlations (risk, gender, age, location, WHO, mutation status)
+- Protein-protein correlation networks
+- Imatinib drug resistance biomarker analysis
+- Comprehensive multi-dimensional protein analysis
 
 **Advanced Features**:
 - Parallel tool execution (multiple analyses simultaneously)

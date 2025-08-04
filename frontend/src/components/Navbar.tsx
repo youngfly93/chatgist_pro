@@ -35,6 +35,18 @@ const Navbar: React.FC = () => {
           >
             AI助手
           </Link>
+          <Link
+            to="/loader-test"
+            className={`nav-link ${location.pathname === '/loader-test' ? 'active' : ''}`}
+          >
+            动效测试
+          </Link>
+          <Link
+            to="/chat-demo"
+            className={`nav-link ${location.pathname === '/chat-demo' ? 'active' : ''}`}
+          >
+            聊天演示
+          </Link>
         </div>
       </div>
     </nav>

@@ -2,7 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import AIChat from './pages/AIChat';
-import TestComprehensive from './pages/TestComprehensive';
+import TestPhospho from './pages/TestPhospho';
+import LoaderTest from './pages/LoaderTest';
+import ChatDemo from './pages/ChatDemo';
 import './App.css';
 
 function App() {
@@ -14,7 +16,9 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/ai-chat" element={<AIChat />} />
-            <Route path="/test-comprehensive" element={<TestComprehensive />} />
+            <Route path="/test-phospho" element={<TestPhospho />} />
+            <Route path="/loader-test" element={<LoaderTest />} />
+          <Route path="/chat-demo" element={<ChatDemo />} />
           </Routes>
         </main>
         <footer className="footer">

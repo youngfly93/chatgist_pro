@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import { LoaderThree } from '../components/ui/loader';
+import { Bot, Dna, Microscope, Building, Pill, BookOpen } from 'lucide-react';
 
 interface PhosphoAnalysis {
   status: string;
@@ -138,14 +139,14 @@ const AIChat: React.FC = () => {
         <div className="messages">
           {messages.length === 0 && (
             <div className="welcome-message">
-              <p>👋 你好！我是GIST辅助智能助手。</p>
+              <p><Bot size={20} style={{ display: 'inline', marginRight: '8px', verticalAlign: 'middle' }} />你好！我是GIST辅助智能助手。</p>
               <p>我可以协助您了解胃肠道间质瘤（GIST）相关知识：</p>
               <p>
-                🧬 GIST基本概念和分子机制<br/>
-                🔬 基因突变信息（KIT、PDGFRA等）<br/>
-                🏥 诊断方法和治疗选择<br/>
-                💊 药物信息和作用机制<br/>
-                📚 研究进展和文献资料
+                <Dna size={16} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'middle' }} />GIST基本概念和分子机制<br/>
+                <Microscope size={16} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'middle' }} />基因突变信息（KIT、PDGFRA等）<br/>
+                <Building size={16} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'middle' }} />诊断方法和治疗选择<br/>
+                <Pill size={16} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'middle' }} />药物信息和作用机制<br/>
+                <BookOpen size={16} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'middle' }} />研究进展和文献资料
               </p>
               <p>请注意：我提供的是科普信息，具体医疗决策请咨询专业医生。</p>
             </div>

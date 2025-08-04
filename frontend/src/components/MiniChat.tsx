@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Send } from 'lucide-react';
+import { Send, Bot, Dna } from 'lucide-react';
 import { LoaderThree } from './ui/loader';
 
 interface PhosphoAnalysis {
@@ -64,11 +64,17 @@ interface Message {
 interface MiniChatProps {
   placeholder?: string;
   height?: string;
+  onAnalysisResult?: (results: {
+    phosphoAnalysis?: PhosphoAnalysis | ComprehensiveAnalysis;
+    transcriptomeAnalysis?: TranscriptomeAnalysis;
+    singleCellAnalysis?: SingleCellAnalysis;
+  }) => void;
 }
 
 const MiniChat: React.FC<MiniChatProps> = ({ 
   placeholder = "输入问题，AI助手将为您解答...",
-  height = "400px"
+  height = "400px",
+  onAnalysisResult
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   
@@ -137,6 +143,15 @@ const MiniChat: React.FC<MiniChatProps> = ({
       console.log('TranscriptomeAnalysis:', data.transcriptomeAnalysis);
       console.log('SingleCellAnalysis:', data.singleCellAnalysis);
       
+      // 如果有分析结果，通过回调函数传递给父组件
+      if (onAnalysisResult && (data.phosphoAnalysis || data.transcriptomeAnalysis || data.singleCellAnalysis)) {
+        onAnalysisResult({
+          phosphoAnalysis: data.phosphoAnalysis,
+          transcriptomeAnalysis: data.transcriptomeAnalysis,
+          singleCellAnalysis: data.singleCellAnalysis
+        });
+      }
+      
       setMessages(prev => [...prev, aiMessage]);
     } catch (error: any) {
       console.error('Chat error:', error);
@@ -164,7 +179,7 @@ const MiniChat: React.FC<MiniChatProps> = ({
       <div className="mini-chat-messages">
         {messages.length === 0 ? (
           <div className="mini-chat-welcome">
-            <p>👋 您好！我是GIST AI助手</p>
+            <p><Bot size={20} style={{ display: 'inline', marginRight: '8px', verticalAlign: 'middle' }} />您好！我是GIST AI助手</p>
             <p>有什么问题可以问我</p>
           </div>
         ) : (
@@ -374,7 +389,7 @@ const MiniChat: React.FC<MiniChatProps> = ({
                     {message.singleCellAnalysis && (
                       <div style={{marginTop: '15px', padding: '10px', border: '1px solid #e1e5e9', borderRadius: '8px', backgroundColor: '#f8f9fa'}}>
                         <h4 style={{color: '#2c3e50', margin: '0 0 10px 0', fontSize: '0.95em'}}>
-                          🧬 单细胞RNA测序分析结果
+                          <Dna size={16} style={{ display: 'inline', marginRight: '6px' }} />单细胞RNA测序分析结果
                         </h4>
                         <p style={{margin: '5px 0', fontSize: '0.9em'}}>{message.singleCellAnalysis.message || message.singleCellAnalysis.summary}</p>
                         

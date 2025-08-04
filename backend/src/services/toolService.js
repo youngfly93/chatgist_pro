@@ -1,6 +1,7 @@
 import phosphoService from './phosphoService.js';
 import transcriptomeService from './transcriptomeService.js';
 import singleCellService from './singleCellService.js';
+import ProteomicsService from './proteomicsService.js';
 
 class ToolService {
   constructor() {
@@ -345,6 +346,116 @@ class ToolService {
     });
     
     // 数据查询工具（未来扩展）
+    // 蛋白质组学分析工具
+    this.registerTool('proteomics_analysis', async (args) => {
+      const { gene, analysis_type = 'comprehensive', gene2 } = args;
+      
+      // 初始化蛋白质组学服务
+      const proteomicsService = new ProteomicsService();
+      
+      let result;
+      
+      switch (analysis_type) {
+        case 'query':
+          result = await proteomicsService.queryProtein(gene);
+          break;
+          
+        case 'comprehensive':
+          result = await proteomicsService.comprehensiveAnalysis(gene);
+          break;
+          
+        case 'correlation':
+          if (!gene2) {
+            throw new Error('相关性分析需要提供第二个蛋白质ID');
+          }
+          result = await proteomicsService.correlationAnalysis(gene, gene2);
+          break;
+          
+        case 'drug_resistance':
+          result = await proteomicsService.drugResistanceAnalysis(gene);
+          break;
+          
+        default:
+          // 其他分析类型作为箱线图分析处理
+          result = await proteomicsService.boxplotAnalysis(gene, analysis_type);
+          break;
+      }
+      
+      // 规范化响应格式（如果需要）
+      if (result && typeof result === 'object') {
+        for (const key of Object.keys(result)) {
+          if (Array.isArray(result[key]) && result[key].length === 1) {
+            result[key] = result[key][0];
+          }
+        }
+      }
+      
+      // 处理综合分析结果
+      if (analysis_type === 'comprehensive' && result && result.analyses) {
+        // 检查是否有成功的分析
+        const hasSuccessfulAnalyses = Object.values(result.analyses).some(analysis => 
+          analysis && analysis.status === 'success'
+        );
+        
+        const hasPlots = Object.values(result.analyses).some(analysis =>
+          analysis && analysis.plot
+        );
+
+        return {
+          ...result,
+          status: hasSuccessfulAnalyses ? 'success' : 'partial',
+          hasData: true,
+          hasPlot: hasPlots,
+          hasAnalyses: true,
+          message: result.message || `${gene}蛋白质组学综合分析完成`
+        };
+      }
+      
+      // 为单个分析添加状态信息
+      return {
+        ...result,
+        hasData: !!result.data,
+        hasPlot: !!(result.plot || (result.plots && Object.keys(result.plots).length > 0)),
+        hasAnalyses: false
+      };
+    }, {
+      description: '执行GIST蛋白质组学分析',
+      category: 'analysis'
+    });
+
+    // 蛋白质组学富集分析工具
+    this.registerTool('proteomics_enrichment', async (args) => {
+      const { gene, dataset = "Sun's Study", analysis_type = "both", top_positive = 50, top_negative = 50 } = args;
+      
+      // 初始化蛋白质组学服务
+      const proteomicsService = new ProteomicsService();
+      
+      // 调用富集分析
+      const result = await proteomicsService.enrichmentAnalysis(
+        gene, dataset, analysis_type, top_positive, top_negative
+      );
+      
+      // 规范化响应格式（如果需要）
+      if (result && typeof result === 'object') {
+        for (const key of Object.keys(result)) {
+          if (Array.isArray(result[key]) && result[key].length === 1) {
+            result[key] = result[key][0];
+          }
+        }
+      }
+      
+      // 添加状态信息
+      return {
+        ...result,
+        hasData: !!result.data,
+        hasPlot: !!(result.plot || (result.plots && Object.keys(result.plots).length > 0)),
+        hasAnalyses: false
+      };
+    }, {
+      description: '执行GIST蛋白质组学富集分析（GSEA + 传统富集）',
+      category: 'analysis'
+    });
+
     this.registerTool('gene_info', async (args) => {
       // 暂时返回模拟数据
       return {

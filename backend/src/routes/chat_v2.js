@@ -3,6 +3,7 @@ import axios from 'axios';
 import { phosphoTools, toolHandlers } from '../tools/phosphoTools.js';
 import { transcriptomeTools } from '../tools/transcriptomeTools.js';
 import { singleCellTools } from '../tools/singleCellTools.js';
+import { proteomicsTools } from '../tools/proteomicsTools.js';
 import toolService from '../services/toolService.js';
 import { getSystemPrompt } from '../config/prompts.js';
 
@@ -97,7 +98,7 @@ async function handleToolCalls(messages) {
         {
           model: process.env.KIMI_MODEL || 'kimi-k2-0711-preview',
           messages: messages,
-          tools: [...phosphoTools, ...transcriptomeTools, ...singleCellTools],
+          tools: [...phosphoTools, ...transcriptomeTools, ...singleCellTools, ...proteomicsTools],
           tool_choice: "auto",
           temperature: 0.6,
           max_tokens: 2000
@@ -355,6 +356,43 @@ async function handleToolCalls(messages) {
         console.log('Has plot:', response.singleCellAnalysis.hasPlot);
         console.log('Has analyses:', response.singleCellAnalysis.hasAnalyses);
         console.log('Image base64 length:', response.singleCellAnalysis.image_base64 ? response.singleCellAnalysis.image_base64.length : 0);
+      }
+    }
+
+    // 处理蛋白质组学分析结果
+    const proteomicsResults = toolCallResults.filter(tc =>
+      (tc.tool === 'proteomics_analysis' || tc.tool === 'proteomics_enrichment') && 
+      tc.result && (tc.result.status === 'success' || tc.result.hasPlot)
+    );
+
+    console.log('Successful proteomics results:', proteomicsResults.length);
+
+    if (proteomicsResults.length > 0) {
+      console.log('=== Processing Proteomics Results ===');
+
+      if (proteomicsResults.length === 1) {
+        // 单个蛋白质组学分析结果
+        console.log('Using single proteomics analysis result');
+        response.proteomicsAnalysis = proteomicsResults[0].result;
+      } else {
+        // 多个蛋白质组学分析结果，优先选择富集分析结果
+        const enrichmentResult = proteomicsResults.find(pr => pr.tool === 'proteomics_enrichment');
+        if (enrichmentResult) {
+          console.log('Using proteomics enrichment result (has plots)');
+          response.proteomicsAnalysis = enrichmentResult.result;
+        } else {
+          console.log('Using first proteomics analysis result');
+          response.proteomicsAnalysis = proteomicsResults[0].result;
+        }
+      }
+
+      // 调试输出
+      if (response.proteomicsAnalysis) {
+        console.log('ProteomicsAnalysis added to response');
+        console.log('Has data:', response.proteomicsAnalysis.hasData);
+        console.log('Has plot:', response.proteomicsAnalysis.hasPlot);
+        console.log('Has plots:', !!(response.proteomicsAnalysis.plots && Object.keys(response.proteomicsAnalysis.plots).length > 0));
+        console.log('Has analyses:', response.proteomicsAnalysis.hasAnalyses);
       }
     }
   }

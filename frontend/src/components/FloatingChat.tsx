@@ -3,6 +3,7 @@ import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import html2canvas from 'html2canvas';
 import { Bot, User, Camera, BarChart3, X, Image, Hand, Target, Lightbulb } from 'lucide-react';
+import { LoaderThree } from './ui/loader';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -731,9 +732,13 @@ const FloatingChat: React.FC = () => {
               backgroundColor: 'white',
               padding: '10px 12px',
               borderRadius: '12px',
-              border: '1px solid #e0e0e0'
+              border: '1px solid #e0e0e0',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
             }}>
-              {streamMode ? 'AI正在回复...' : 'AI正在思考...'}
+              <LoaderThree />
+              <span>{streamMode ? 'AI正在回复...' : 'AI正在思考...'}</span>
             </div>
           </div>
         )}
@@ -827,7 +832,7 @@ const FloatingChat: React.FC = () => {
           marginTop: '8px',
           textAlign: 'center'
         }}>
-          支持拖拽图片、点击📊按钮上传图片，或按Ctrl+V粘贴图片进行分析
+          支持拖拽图片、点击<BarChart3 size={16} style={{ display: 'inline', marginLeft: '4px', marginRight: '4px', verticalAlign: 'middle' }} />按钮上传图片，或按Ctrl+V粘贴图片进行分析
         </div>
       </div>
     </div>

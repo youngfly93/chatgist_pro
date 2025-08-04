@@ -120,3 +120,9 @@ GIST_shiny/*.log
 GIST_shiny/original/
 GIST_shiny/shiny.log
 GIST_shiny/nohup.out
+
+# GIST data directories (with RDS files and embedded git repos)
+GIST_Phosphoproteomics/
+GIST_Protemics/
+GIST_Transcriptome/
+ChatGIST_ssc/
