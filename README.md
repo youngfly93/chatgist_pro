@@ -68,95 +68,108 @@ install.packages(c("survival", "corrplot", "reshape2", "dplyr",
 
 ## 📂 Required Data Files for Full Functionality
 
-To enable all features of ChatGIST Pro, you need to place the following data files in their respective directories:
+To enable all features of ChatGIST Pro, you need to obtain and place the following data files in their respective directories:
 
-### 1. Phosphoproteomics Data (Port 8001)
+### 1. Phosphoproteomics Data (Port 8001) ✅
 **Directory**: `GIST_Phosphoproteomics/`
 
-Required files:
-- `Phosphoproteomics_list.RDS` - Main phosphoproteomics dataset
-- `Proteomics_ID_Pathway_list.RDS` - Pathway analysis data
-- `modules/` folder - Contains Shiny analysis modules (optional for Shiny app)
-
-Clone from repository:
+This directory is **already included** when you clone the project:
 ```bash
 git clone https://github.com/youngfly93/GIST_Phosphoproteomics.git
 ```
 
-### 2. Transcriptomics Data (Port 8002)
+Contains:
+- `Phosphoproteomics_list.RDS` - Main phosphoproteomics dataset
+- `Proteomics_ID_Pathway_list.RDS` - Pathway analysis data
+- Complete Shiny app with all modules
+
+### 2. Transcriptomics Data (Port 8002) ⚠️
 **Directory**: `GIST_Transcriptome/`
 
-Required files:
-- `list_survival.RDS` - Survival analysis data
-- `list_matrix.RDS` - Gene expression matrix
-- `DEG.RDS` - Differentially expressed genes
-- `FPKM.RDS` - FPKM expression values
-- `result_data.RDS` - Analysis results
+**Note**: The main project repository already includes the Shiny app structure, but you need to add the data files:
 
-Clone or download from your data source.
+Required data file to add:
+- `original/dbGIST_matrix(2).Rdata` - Main transcriptome database (CRITICAL)
 
-### 3. Single-cell RNA-seq Data (Port 8003)
+Optional files (if available):
+- `original/GSE15966_20230217.CSV` - Clinical data supplement
+- `original/dbGIST_ImmuneCell.RData` - Immune cell data
+- `original/dbGIST_msigdb.RData` - MSigDB gene sets
+- `original/dbGIST_wikipathways.RData` - WikiPathways data
+
+**Important**: The system primarily uses `dbGIST_matrix(2).Rdata`. Without this file, transcriptome analysis will not work.
+
+### 3. Single-cell RNA-seq Data (Port 8003) ⚠️
 **Directory**: `ChatGIST_ssc/`
 
-Required files:
-- `GIST_sct_In_house.rds` - In-house single-cell dataset
-- `GIST_sct_GSE254762.rds` - Public dataset GSE254762
-- `GIST_sct_GSE162115.rds` - Public dataset GSE162115
-- `DEG_list.RDS` - Differential expression results
+You need to rename the existing files in this directory:
+```bash
+# The directory already contains these files with "_reduce" suffix:
+# Rename them to match the expected names:
+mv GSE162115_ssc_reduce.RDS GIST_sct_GSE162115.rds
+mv GSE254762_ssc_reduce.RDS GIST_sct_GSE254762.rds
+mv In_house_ssc_reduce.RDS GIST_sct_In_house.rds
+```
 
-Clone or download from your data source.
+Or update the `singlecell_api_adapter.R` to use the existing filenames.
 
-### 4. Proteomics Data (Port 8004)
+### 4. Proteomics Data (Port 8004) ✅
 **Directory**: `GIST_Protemics/`
 
-Required files:
-- `Protemics_list.rds` - Main proteomics dataset
-- `GSEA_KEGG.gmt` - KEGG pathway gene sets
-- `GSEA_hallmark.gmt` - Hallmark gene sets
-- `pathway_final.R` - Pathway analysis functions
+This directory is **already included** in the main project with all required files:
+- `Protemics_list.rds` - Main proteomics dataset ✅
+- `Proteomics_hallmark_list.rds` - Hallmark gene sets ✅
+- `GSEA_KEGG.gmt` - KEGG pathway gene sets ✅
+- `GSEA_hallmark.gmt` - Hallmark gene sets ✅
+- `Protemic.R` - Analysis functions ✅
+- `pathway_final.R` - Pathway analysis functions ✅
 
-Clone or download from your data source.
+### Summary of What You Need to Do After Cloning
 
-### Directory Structure After Setup
-```
-chatgist_pro/
-├── frontend/                    # React frontend
-├── backend/                     # Node.js backend
-├── GIST_Phosphoproteomics/     # Phosphoproteomics data (clone from GitHub)
-│   ├── Phosphoproteomics_list.RDS
-│   ├── Proteomics_ID_Pathway_list.RDS
-│   └── modules/
-├── GIST_Transcriptome/          # Transcriptomics data (user provided)
-│   ├── list_survival.RDS
-│   ├── list_matrix.RDS
-│   ├── DEG.RDS
-│   ├── FPKM.RDS
-│   └── result_data.RDS
-├── ChatGIST_ssc/                # Single-cell data (user provided)
-│   ├── GIST_sct_In_house.rds
-│   ├── GIST_sct_GSE254762.rds
-│   ├── GIST_sct_GSE162115.rds
-│   └── DEG_list.RDS
-├── GIST_Protemics/              # Proteomics data (user provided)
-│   ├── Protemics_list.rds
-│   ├── GSEA_KEGG.gmt
-│   ├── GSEA_hallmark.gmt
-│   └── pathway_final.R
-└── [Other project files...]
+1. **Phosphoproteomics**: ✅ Already complete (clone GIST_Phosphoproteomics repo)
+2. **Transcriptomics**: ⚠️ Need to add `original/dbGIST_matrix(2).Rdata` file
+3. **Single-cell**: ⚠️ Need to rename existing files or update script
+4. **Proteomics**: ✅ Already complete (included in main repo)
+
+### Quick Setup Commands
+```bash
+# 1. Clone main project
+git clone https://github.com/youngfly93/chatgist_pro.git
+cd chatgist_pro
+
+# 2. Clone phosphoproteomics data
+git clone https://github.com/youngfly93/GIST_Phosphoproteomics.git
+
+# 3. Rename single-cell files (if using existing data)
+cd ChatGIST_ssc
+mv GSE162115_ssc_reduce.RDS GIST_sct_GSE162115.rds
+mv GSE254762_ssc_reduce.RDS GIST_sct_GSE254762.rds  
+mv In_house_ssc_reduce.RDS GIST_sct_In_house.rds
+cd ..
+
+# 4. Add transcriptome data (obtain from data provider)
+# Place dbGIST_matrix(2).Rdata in GIST_Transcriptome/original/
+
+# 5. Install dependencies
+npm run install:all
+
+# 6. Configure environment
+cp backend/.env.example backend/.env
+# Edit backend/.env with your API keys
+
+# 7. Start the application
+start_all_with_proteomics.bat  # Windows - All 4 analysis dimensions
 ```
 
 ### Verification
-After placing all data files, you can verify the setup:
+After setup, verify each service:
 
 ```bash
 # Test each service individually
 Rscript --vanilla phospho_api_adapter.R --function="query" --gene="KIT"
-Rscript --vanilla transcriptome_plumber_api.R --function="query" --gene="KIT"
+Rscript --vanilla transcriptome_plumber_api.R --function="query" --gene="KIT"  
 Rscript --vanilla singlecell_api_adapter.R --function="query" --gene="KIT"
 Rscript --vanilla proteomics_api_adapter.R --function="query" --gene="KIT"
-
-# Or start all services with
-start_all_with_proteomics.bat  # Windows - All 4 analysis dimensions
 ```
 
 ### Quick Deployment (Complete Setup)
