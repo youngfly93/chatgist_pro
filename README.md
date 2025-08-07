@@ -99,19 +99,15 @@ Optional files (if available):
 
 **Important**: The system primarily uses `dbGIST_matrix(2).Rdata`. Without this file, transcriptome analysis will not work.
 
-### 3. Single-cell RNA-seq Data (Port 8003) ⚠️
+### 3. Single-cell RNA-seq Data (Port 8003) ✅
 **Directory**: `ChatGIST_ssc/`
 
-You need to rename the existing files in this directory:
-```bash
-# The directory already contains these files with "_reduce" suffix:
-# Rename them to match the expected names:
-mv GSE162115_ssc_reduce.RDS GIST_sct_GSE162115.rds
-mv GSE254762_ssc_reduce.RDS GIST_sct_GSE254762.rds
-mv In_house_ssc_reduce.RDS GIST_sct_In_house.rds
-```
+This directory is **already included** in the main project with all required files:
+- `In_house_ssc_reduce.RDS` - In-house GIST single-cell dataset ✅
+- `GSE254762_ssc_reduce.RDS` - Public dataset GSE254762 ✅
+- `GSE162115_ssc_reduce.RDS` - Public dataset GSE162115 ✅
 
-Or update the `singlecell_api_adapter.R` to use the existing filenames.
+**Note**: The files are already correctly named and the adapter script is configured to use them.
 
 ### 4. Proteomics Data (Port 8004) ✅
 **Directory**: `GIST_Protemics/`
@@ -128,7 +124,7 @@ This directory is **already included** in the main project with all required fil
 
 1. **Phosphoproteomics**: ✅ Already complete (clone GIST_Phosphoproteomics repo)
 2. **Transcriptomics**: ⚠️ Need to add `original/dbGIST_matrix(2).Rdata` file
-3. **Single-cell**: ⚠️ Need to rename existing files or update script
+3. **Single-cell**: ✅ Already complete (included in main repo)
 4. **Proteomics**: ✅ Already complete (included in main repo)
 
 ### Quick Setup Commands
@@ -140,24 +136,20 @@ cd chatgist_pro
 # 2. Clone phosphoproteomics data
 git clone https://github.com/youngfly93/GIST_Phosphoproteomics.git
 
-# 3. Rename single-cell files (if using existing data)
-cd ChatGIST_ssc
-mv GSE162115_ssc_reduce.RDS GIST_sct_GSE162115.rds
-mv GSE254762_ssc_reduce.RDS GIST_sct_GSE254762.rds  
-mv In_house_ssc_reduce.RDS GIST_sct_In_house.rds
-cd ..
-
-# 4. Add transcriptome data (obtain from data provider)
+# 3. Add transcriptome data (CRITICAL - obtain from data provider)
+# Create the original folder if it doesn't exist
+mkdir -p GIST_Transcriptome/original
 # Place dbGIST_matrix(2).Rdata in GIST_Transcriptome/original/
 
-# 5. Install dependencies
+# 4. Install dependencies
 npm run install:all
 
-# 6. Configure environment
-cp backend/.env.example backend/.env
+# 5. Configure environment (Windows)
+copy backend\.env.example backend\.env
+# Or on Unix/Mac: cp backend/.env.example backend/.env
 # Edit backend/.env with your API keys
 
-# 7. Start the application
+# 6. Start the application
 start_all_with_proteomics.bat  # Windows - All 4 analysis dimensions
 ```
 
