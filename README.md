@@ -51,12 +51,112 @@ A comprehensive AI-powered web application for GIST (Gastrointestinal Stromal Tu
 
 ### Prerequisites
 - Node.js (v16 or higher)
-- R (v4.0 or higher)
+- R (v4.0 or higher, recommended v4.4.1)
 - npm or yarn
+- Windows OS (for .bat scripts) or Unix-like system
 
 ### Required R Packages
 ```r
+# Core packages for basic functionality
 install.packages(c("jsonlite", "base64enc", "ggplot2", "plumber"))
+
+# Additional packages for full functionality
+install.packages(c("survival", "corrplot", "reshape2", "dplyr", 
+                   "pheatmap", "RColorBrewer", "Seurat", "patchwork", 
+                   "ggsci", "stringr"))
+```
+
+## 📂 Required Data Files for Full Functionality
+
+To enable all features of ChatGIST Pro, you need to place the following data files in their respective directories:
+
+### 1. Phosphoproteomics Data (Port 8001)
+**Directory**: `GIST_Phosphoproteomics/`
+
+Required files:
+- `Phosphoproteomics_list.RDS` - Main phosphoproteomics dataset
+- `Proteomics_ID_Pathway_list.RDS` - Pathway analysis data
+- `modules/` folder - Contains Shiny analysis modules (optional for Shiny app)
+
+Clone from repository:
+```bash
+git clone https://github.com/youngfly93/GIST_Phosphoproteomics.git
+```
+
+### 2. Transcriptomics Data (Port 8002)
+**Directory**: `GIST_Transcriptome/`
+
+Required files:
+- `list_survival.RDS` - Survival analysis data
+- `list_matrix.RDS` - Gene expression matrix
+- `DEG.RDS` - Differentially expressed genes
+- `FPKM.RDS` - FPKM expression values
+- `result_data.RDS` - Analysis results
+
+Clone or download from your data source.
+
+### 3. Single-cell RNA-seq Data (Port 8003)
+**Directory**: `ChatGIST_ssc/`
+
+Required files:
+- `GIST_sct_In_house.rds` - In-house single-cell dataset
+- `GIST_sct_GSE254762.rds` - Public dataset GSE254762
+- `GIST_sct_GSE162115.rds` - Public dataset GSE162115
+- `DEG_list.RDS` - Differential expression results
+
+Clone or download from your data source.
+
+### 4. Proteomics Data (Port 8004)
+**Directory**: `GIST_Protemics/`
+
+Required files:
+- `Protemics_list.rds` - Main proteomics dataset
+- `GSEA_KEGG.gmt` - KEGG pathway gene sets
+- `GSEA_hallmark.gmt` - Hallmark gene sets
+- `pathway_final.R` - Pathway analysis functions
+
+Clone or download from your data source.
+
+### Directory Structure After Setup
+```
+chatgist_pro/
+├── frontend/                    # React frontend
+├── backend/                     # Node.js backend
+├── GIST_Phosphoproteomics/     # Phosphoproteomics data (clone from GitHub)
+│   ├── Phosphoproteomics_list.RDS
+│   ├── Proteomics_ID_Pathway_list.RDS
+│   └── modules/
+├── GIST_Transcriptome/          # Transcriptomics data (user provided)
+│   ├── list_survival.RDS
+│   ├── list_matrix.RDS
+│   ├── DEG.RDS
+│   ├── FPKM.RDS
+│   └── result_data.RDS
+├── ChatGIST_ssc/                # Single-cell data (user provided)
+│   ├── GIST_sct_In_house.rds
+│   ├── GIST_sct_GSE254762.rds
+│   ├── GIST_sct_GSE162115.rds
+│   └── DEG_list.RDS
+├── GIST_Protemics/              # Proteomics data (user provided)
+│   ├── Protemics_list.rds
+│   ├── GSEA_KEGG.gmt
+│   ├── GSEA_hallmark.gmt
+│   └── pathway_final.R
+└── [Other project files...]
+```
+
+### Verification
+After placing all data files, you can verify the setup:
+
+```bash
+# Test each service individually
+Rscript --vanilla phospho_api_adapter.R --function="query" --gene="KIT"
+Rscript --vanilla transcriptome_plumber_api.R --function="query" --gene="KIT"
+Rscript --vanilla singlecell_api_adapter.R --function="query" --gene="KIT"
+Rscript --vanilla proteomics_api_adapter.R --function="query" --gene="KIT"
+
+# Or start all services with
+start_all_with_proteomics.bat  # Windows - All 4 analysis dimensions
 ```
 
 ### Quick Deployment (Complete Setup)
