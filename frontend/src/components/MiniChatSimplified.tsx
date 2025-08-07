@@ -83,12 +83,25 @@ const MiniChat: React.FC<MiniChatProps> = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // 使用setTimeout确保DOM更新完成后再滚动
+    setTimeout(() => {
+      const chatContainer = document.querySelector('.mini-chat-messages');
+      if (chatContainer) {
+        // 使用smooth滚动但限制在容器内
+        chatContainer.scrollTo({
+          top: chatContainer.scrollHeight,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
   };
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    // 只在新消息添加时滚动，避免频繁触发
+    if (messages.length > 0) {
+      scrollToBottom();
+    }
+  }, [messages.length]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

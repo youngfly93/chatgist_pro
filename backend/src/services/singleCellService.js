@@ -160,11 +160,11 @@ class SingleCellService {
       let rProcess;
       
       if (isWindows) {
-        // Windows: 使用批处理文件执行
-        const batchPath = path.join(this.workingDir, 'run_singlecell_analysis.bat');
-        console.log('执行批处理:', batchPath, args.join(' '));
+        // Windows: 直接使用 Rscript.exe
+        const rscriptPath = 'E:\\R-4.4.1\\bin\\Rscript.exe';
+        console.log('执行 Rscript.exe:', rscriptPath, args.join(' '));
         
-        rProcess = spawn(batchPath, args, {
+        rProcess = spawn(rscriptPath, args, {
           cwd: this.workingDir,
           stdio: ['pipe', 'pipe', 'pipe'],
           shell: false

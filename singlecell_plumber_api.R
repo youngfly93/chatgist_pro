@@ -17,8 +17,8 @@ suppressPackageStartupMessages({
 })
 
 # 初始化
-cat("=== 初始化 Single-cell Plumber API ===\n")
-cat("当前工作目录:", getwd(), "\n")
+# cat("=== 初始化 Single-cell Plumber API ===\n")  # 注释掉以避免干扰API输出
+# cat("当前工作目录:", getwd(), "\n")
 
 # 定义颜色主题（与原始代码保持一致）
 defined_color <- c(pal_npg("nrc", alpha = 1)(9),
@@ -55,7 +55,7 @@ load_dataset <- function(dataset_name) {
     stop(paste("Dataset file not found:", dataset_path))
   }
   
-  cat("Loading dataset:", dataset_name, "\n")
+  # cat("Loading dataset:", dataset_name, "\n")  # 注释掉以避免干扰API输出
   seurat_obj <- readRDS(dataset_path)
   loaded_datasets[[dataset_name]] <<- seurat_obj
   
@@ -80,7 +80,7 @@ auto_select_dataset <- function(gene = NULL) {
         }
       }
     }, error = function(e) {
-      cat("Failed to load dataset", dataset_name, ":", e$message, "\n")
+      # cat("Failed to load dataset", dataset_name, ":", e$message, "\n")  # 注释掉以避免干扰API输出
     })
   }
   
@@ -88,22 +88,22 @@ auto_select_dataset <- function(gene = NULL) {
 }
 
 # 预加载数据集
-cat("预加载可用数据集...\n")
+# cat("预加载可用数据集...\n")  # 注释掉以避免干扰API输出
 for (dataset_name in names(dataset_info)) {
   dataset_path <- dataset_info[[dataset_name]]$file
   if (file.exists(dataset_path)) {
     tryCatch({
       load_dataset(dataset_name)
-      cat("成功预加载:", dataset_name, "\n")
+      # cat("成功预加载:", dataset_name, "\n")  # 注释掉以避免干扰API输出
     }, error = function(e) {
-      cat("预加载失败:", dataset_name, "-", e$message, "\n")
+      # cat("预加载失败:", dataset_name, "-", e$message, "\n")  # 注释掉以避免干扰API输出
     })
   } else {
-    cat("数据集文件不存在:", dataset_path, "\n")
+    # cat("数据集文件不存在:", dataset_path, "\n")  # 注释掉以避免干扰API输出
   }
 }
 
-cat("Single-cell Plumber API 初始化完成\n")
+# cat("Single-cell Plumber API 初始化完成\n")  # 注释掉以避免干扰API输出
 
 #* @apiTitle GIST Single-cell Analysis API
 #* @apiDescription RESTful API for GIST single-cell RNA-seq analysis
@@ -249,7 +249,7 @@ function(gene, dataset = NULL) {
     ggsave(temp_file, plot = p, width = 10, height = 6, dpi = 300)
     
     # 转换为base64
-    img_base64 <- base64encode(temp_file)
+    img_base64 <- paste0("data:image/png;base64,", base64encode(temp_file))
     
     # 清理临时文件
     unlink(temp_file)
@@ -331,7 +331,7 @@ function(dataset = NULL) {
     ggsave(temp_file, plot = p, width = 10, height = 8, dpi = 300)
     
     # 转换为base64
-    img_base64 <- base64encode(temp_file)
+    img_base64 <- paste0("data:image/png;base64,", base64encode(temp_file))
     
     # 清理临时文件
     unlink(temp_file)
@@ -428,7 +428,7 @@ function(gene, dataset = NULL) {
     ggsave(temp_file, plot = p, width = 10, height = 8, dpi = 300)
     
     # 转换为base64
-    img_base64 <- base64encode(temp_file)
+    img_base64 <- paste0("data:image/png;base64,", base64encode(temp_file))
     
     # 清理临时文件
     unlink(temp_file)

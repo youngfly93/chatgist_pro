@@ -1,5 +1,5 @@
 @echo off
-chcp 65001 >nul
+cls
 echo ========================================
 echo   ChatGIST Pro - Complete Service Stack
 echo   4D Analysis: Phospho + Transcriptome + SingleCell + Proteomics
@@ -14,27 +14,27 @@ echo.
 echo [1/6] Starting Phosphoproteomics API (port 8001)...
 start "Phospho API" cmd /k "E:\R-4.4.1\bin\Rscript.exe" --vanilla run_plumber_fixed.R
 
-timeout /t 3 >nul
+timeout /t 3 >nul 2>&1
 
 echo [2/6] Starting Transcriptome API (port 8002)...
 start "Transcriptome API" cmd /k "E:\R-4.4.1\bin\Rscript.exe" --vanilla run_transcriptome_plumber.R
 
-timeout /t 3 >nul
+timeout /t 3 >nul 2>&1
 
 echo [3/6] Starting Single-cell API (port 8003)...
 start "SingleCell API" cmd /k "E:\R-4.4.1\bin\Rscript.exe" --vanilla run_singlecell_plumber.R
 
-timeout /t 3 >nul
+timeout /t 3 >nul 2>&1
 
 echo [4/6] Starting Proteomics API (port 8004)...
 start "Proteomics API" cmd /k "E:\R-4.4.1\bin\Rscript.exe" --vanilla run_proteomics_plumber.R
 
-timeout /t 5 >nul
+timeout /t 5 >nul 2>&1
 
 echo [5/6] Starting Backend Server (port 8000)...
 start "Backend Server" cmd /k "cd backend && npm run dev"
 
-timeout /t 3 >nul
+timeout /t 3 >nul 2>&1
 
 echo [6/6] Starting Frontend Dev Server (port 5173)...
 start "Frontend Server" cmd /k "cd frontend && npm run dev"

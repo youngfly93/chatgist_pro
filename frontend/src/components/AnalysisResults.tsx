@@ -184,32 +184,43 @@ const ImageModal: React.FC<{
   );
 };
 
-// 图片轮播组件
-const ImageCarousel: React.FC<{ plots: { [key: string]: string } }> = ({ plots }) => {
+// 通用图片轮播组件
+interface ImageCarouselProps {
+  images: Array<{ url: string; title: string }>;
+  title?: string;
+  primaryColor?: string;
+}
+
+const UnifiedImageCarousel: React.FC<ImageCarouselProps> = ({ 
+  images, 
+  title = '分析结果图表',
+  primaryColor = '#6b21d4'
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
-  const plotEntries = Object.entries(plots).filter(([_, plotData]) => plotData);
   
-  if (plotEntries.length === 0) return null;
+  if (!images || images.length === 0) return null;
   
   const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % plotEntries.length);
+    setCurrentIndex((prev) => (prev + 1) % images.length);
   };
   
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + plotEntries.length) % plotEntries.length);
+    setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
   };
   
   return (
     <div style={{ position: 'relative', margin: '16px 0' }}>
-      <h6 style={{ 
-        margin: '0 0 12px 0', 
-        color: '#6b21d4', 
-        fontWeight: '600',
-        textAlign: 'center'
-      }}>
-        富集分析结果图表 ({currentIndex + 1} / {plotEntries.length})
-      </h6>
+      {images.length > 1 && (
+        <h6 style={{ 
+          margin: '0 0 12px 0', 
+          color: primaryColor, 
+          fontWeight: '600',
+          textAlign: 'center'
+        }}>
+          {title} ({currentIndex + 1} / {images.length})
+        </h6>
+      )}
       
       {/* 图片容器 */}
       <div style={{
@@ -220,22 +231,24 @@ const ImageCarousel: React.FC<{ plots: { [key: string]: string } }> = ({ plots }
         border: '1px solid #e5e7eb'
       }}>
         {/* 当前图片标题 */}
-        <div style={{
-          padding: '12px 16px',
-          background: '#6b21d4',
-          color: 'white',
-          fontSize: '14px',
-          fontWeight: '500',
-          textAlign: 'center'
-        }}>
-          {plotEntries[currentIndex][0].replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-        </div>
+        {images.length > 1 && (
+          <div style={{
+            padding: '12px 16px',
+            background: primaryColor,
+            color: 'white',
+            fontSize: '14px',
+            fontWeight: '500',
+            textAlign: 'center'
+          }}>
+            {images[currentIndex].title}
+          </div>
+        )}
         
         {/* 图片 */}
         <div style={{ position: 'relative' }}>
           <img 
-            src={plotEntries[currentIndex][1]}
-            alt={`${plotEntries[currentIndex][0]} 富集分析图`}
+            src={images[currentIndex].url}
+            alt={images[currentIndex].title}
             style={{
               width: '100%',
               height: 'auto',
@@ -267,7 +280,7 @@ const ImageCarousel: React.FC<{ plots: { [key: string]: string } }> = ({ plots }
           </div>
           
           {/* 左箭头 */}
-          {plotEntries.length > 1 && (
+          {images.length > 1 && (
             <button
               onClick={prevSlide}
               style={{
@@ -295,7 +308,7 @@ const ImageCarousel: React.FC<{ plots: { [key: string]: string } }> = ({ plots }
           )}
           
           {/* 右箭头 */}
-          {plotEntries.length > 1 && (
+          {images.length > 1 && (
             <button
               onClick={nextSlide}
               style={{
@@ -324,7 +337,7 @@ const ImageCarousel: React.FC<{ plots: { [key: string]: string } }> = ({ plots }
         </div>
         
         {/* 指示器 */}
-        {plotEntries.length > 1 && (
+        {images.length > 1 && (
           <div style={{
             display: 'flex',
             justifyContent: 'center',
@@ -332,7 +345,7 @@ const ImageCarousel: React.FC<{ plots: { [key: string]: string } }> = ({ plots }
             padding: '12px',
             background: '#f9fafb'
           }}>
-            {plotEntries.map((_, index) => (
+            {images.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentIndex(index)}
@@ -341,7 +354,7 @@ const ImageCarousel: React.FC<{ plots: { [key: string]: string } }> = ({ plots }
                   height: '10px',
                   borderRadius: '50%',
                   border: 'none',
-                  background: index === currentIndex ? '#6b21d4' : '#d1d5db',
+                  background: index === currentIndex ? primaryColor : '#d1d5db',
                   cursor: 'pointer',
                   transition: 'background 0.2s'
                 }}
@@ -354,12 +367,23 @@ const ImageCarousel: React.FC<{ plots: { [key: string]: string } }> = ({ plots }
       {/* 图片放大模态框 */}
       <ImageModal
         isOpen={modalOpen}
-        imageUrl={plotEntries[currentIndex][1]}
-        imageName={plotEntries[currentIndex][0]}
+        imageUrl={images[currentIndex].url}
+        imageName={images[currentIndex].title}
         onClose={() => setModalOpen(false)}
       />
     </div>
   );
+};
+
+// 兼容旧的ImageCarousel组件
+const ImageCarousel: React.FC<{ plots: { [key: string]: string } }> = ({ plots }) => {
+  const plotEntries = Object.entries(plots).filter(([_, plotData]) => plotData);
+  const images = plotEntries.map(([key, url]) => ({
+    url,
+    title: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+  }));
+  
+  return <UnifiedImageCarousel images={images} title="富集分析结果图表" primaryColor="#8b5cf6" />;
 };
 
 const AnalysisResults: React.FC<AnalysisResultsProps> = ({
@@ -489,53 +513,90 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
                     }}>{proteomicsAnalysis.message}</p>
                   </div>
                   
-                  {proteomicsAnalysis.analyses && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                      {Object.entries(proteomicsAnalysis.analyses).map(([analysisType, analysis]) => (
-                        <div key={analysisType} style={{
-                          border: '1px solid #e5e7eb',
-                          borderRadius: '8px',
+                  {proteomicsAnalysis.analyses && (() => {
+                    // 收集所有成功的分析图片
+                    const allImages: Array<{ url: string; title: string }> = [];
+                    const analysisDetails: Array<{ type: string; status: string; message: string }> = [];
+                    
+                    console.log('Processing proteomics analyses:', proteomicsAnalysis.analyses);
+                    
+                    Object.entries(proteomicsAnalysis.analyses).forEach(([analysisType, analysis]) => {
+                      analysisDetails.push({
+                        type: analysisType,
+                        status: analysis.status,
+                        message: analysis.message
+                      });
+                      
+                      console.log(`Analysis ${analysisType}:`, analysis);
+                      
+                      // 不管状态如何，只要有图片就收集
+                      if (analysis.plot) {
+                        console.log(`Found plot for ${analysisType}:`, analysis.plot.substring(0, 50));
+                        allImages.push({ 
+                          url: analysis.plot, 
+                          title: analysisType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+                        });
+                      }
+                      if (analysis.plots) {
+                        console.log(`Found plots object for ${analysisType}:`, Object.keys(analysis.plots));
+                        Object.entries(analysis.plots).forEach(([plotType, plotUrl]) => {
+                          if (plotUrl) {
+                            allImages.push({ 
+                              url: plotUrl, 
+                              title: `${analysisType} - ${plotType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}`
+                            });
+                          }
+                        });
+                      }
+                    });
+                    
+                    console.log('Total images collected:', allImages.length);
+                    
+                    return (
+                      <div>
+                        {/* 分析状态概览 */}
+                        <div style={{ 
+                          marginBottom: '16px',
                           padding: '12px',
-                          background: '#fafafa',
-                          borderLeft: analysis.status === 'success' ? '4px solid #10b981' : '4px solid #ef4444'
+                          background: '#f9fafb',
+                          borderRadius: '8px',
+                          border: '1px solid #e5e7eb'
                         }}>
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            marginBottom: '8px'
-                          }}>
-                            <span style={{
-                              width: '8px',
-                              height: '8px',
-                              borderRadius: '50%',
-                              background: analysis.status === 'success' ? '#10b981' : '#ef4444'
-                            }}></span>
-                            <strong>{analysisType}</strong>
+                          <h6 style={{ margin: '0 0 8px 0', color: '#374151', fontSize: '14px', fontWeight: '600' }}>
+                            分析完成情况：成功 {proteomicsAnalysis.summary.successful} / 总计 {proteomicsAnalysis.summary.total}
+                          </h6>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            {analysisDetails.map((detail, index) => (
+                              <div key={index} style={{ 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                gap: '8px',
+                                fontSize: '13px'
+                              }}>
+                                <span style={{
+                                  width: '6px',
+                                  height: '6px',
+                                  borderRadius: '50%',
+                                  background: detail.status === 'success' ? '#10b981' : '#ef4444'
+                                }}></span>
+                                <span style={{ fontWeight: '500', color: '#374151' }}>{detail.type}:</span>
+                                <span style={{ color: '#6b7280' }}>{detail.message}</span>
+                              </div>
+                            ))}
                           </div>
-                          <p style={{
-                            margin: '0 0 8px 0',
-                            color: '#6b7280',
-                            fontSize: '14px'
-                          }}>{analysis.message}</p>
-                          {analysis.plot && (
-                            <div style={{ margin: '12px 0' }}>
-                              <img 
-                                src={analysis.plot}
-                                alt={`${analysisType} 分析图`}
-                                style={{
-                                  width: '100%',
-                                  height: 'auto',
-                                  borderRadius: '6px',
-                                  border: '1px solid #e5e7eb'
-                                }}
-                              />
-                            </div>
-                          )}
                         </div>
-                      ))}
-                    </div>
-                  )}
+                        
+                        {/* 所有图片的轮播图 */}
+                        {allImages.length > 0 && (
+                          <UnifiedImageCarousel 
+                            images={allImages}
+                            title="蛋白质组学综合分析图表"
+                            primaryColor="#8b5cf6"
+                          />
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
               ) : (
                 // 单个分析显示
@@ -548,39 +609,10 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
                   
                   {/* 单个图片显示 */}
                   {proteomicsAnalysis.plot && (
-                    <div style={{ margin: '12px 0', position: 'relative' }}>
-                      <img 
-                        src={proteomicsAnalysis.plot}
-                        alt="蛋白质组学分析图"
-                        style={{
-                          width: '100%',
-                          height: 'auto',
-                          borderRadius: '8px',
-                          border: '1px solid #e5e7eb',
-                          cursor: 'pointer'
-                        }}
-                        onClick={() => openModal(proteomicsAnalysis.plot!, '蛋白质组学分析图')}
-                      />
-                      <div
-                        style={{
-                          position: 'absolute',
-                          top: '8px',
-                          left: '8px',
-                          background: 'rgba(0, 0, 0, 0.6)',
-                          color: 'white',
-                          borderRadius: '4px',
-                          padding: '4px 8px',
-                          fontSize: '12px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                          opacity: 0.8
-                        }}
-                      >
-                        <ZoomIn size={12} />
-                        点击放大
-                      </div>
-                    </div>
+                    <UnifiedImageCarousel 
+                      images={[{ url: proteomicsAnalysis.plot, title: '蛋白质组学分析图' }]}
+                      primaryColor="#8b5cf6"
+                    />
                   )}
                   
                   {/* 富集分析图片轮播 */}
@@ -647,41 +679,174 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
                 color: '#374151',
                 fontWeight: '500'
               }}>{isComprehensiveAnalysis(phosphoAnalysis) ? '综合磷酸化分析完成' : phosphoAnalysis.message}</p>
-              {!isComprehensiveAnalysis(phosphoAnalysis) && phosphoAnalysis.plot && (
-                <div style={{ margin: '12px 0', position: 'relative' }}>
-                  <img 
-                    src={phosphoAnalysis.plot}
-                    alt="磷酸化分析图"
-                    style={{
-                      width: '100%',
-                      height: 'auto',
-                      borderRadius: '8px',
-                      border: '1px solid #e5e7eb',
-                      cursor: 'pointer'
-                    }}
-                    onClick={() => openModal(phosphoAnalysis.plot!, '磷酸化分析图')}
-                  />
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '8px',
-                      left: '8px',
-                      background: 'rgba(0, 0, 0, 0.6)',
-                      color: 'white',
-                      borderRadius: '4px',
-                      padding: '4px 8px',
-                      fontSize: '12px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      opacity: 0.8
-                    }}
-                  >
-                    <ZoomIn size={12} />
-                    点击放大
-                  </div>
+              
+              {/* 显示磷酸化位点数据表格 */}
+              {!isComprehensiveAnalysis(phosphoAnalysis) && phosphoAnalysis.data && Array.isArray(phosphoAnalysis.data) && (
+                <div style={{ 
+                  margin: '12px 0', 
+                  overflowX: 'auto',
+                  backgroundColor: '#f9fafb',
+                  borderRadius: '8px',
+                  padding: '12px'
+                }}>
+                  <table style={{
+                    width: '100%',
+                    borderCollapse: 'collapse',
+                    fontSize: '14px'
+                  }}>
+                    <thead>
+                      <tr style={{ borderBottom: '2px solid #e5e7eb' }}>
+                        <th style={{ 
+                          padding: '8px', 
+                          textAlign: 'left',
+                          fontWeight: '600',
+                          color: '#111827'
+                        }}>磷酸化位点</th>
+                        <th style={{ 
+                          padding: '8px', 
+                          textAlign: 'center',
+                          fontWeight: '600',
+                          color: '#111827'
+                        }}>肿瘤样本数</th>
+                        <th style={{ 
+                          padding: '8px', 
+                          textAlign: 'center',
+                          fontWeight: '600',
+                          color: '#111827'
+                        }}>肿瘤占比</th>
+                        <th style={{ 
+                          padding: '8px', 
+                          textAlign: 'center',
+                          fontWeight: '600',
+                          color: '#111827'
+                        }}>正常样本数</th>
+                        <th style={{ 
+                          padding: '8px', 
+                          textAlign: 'center',
+                          fontWeight: '600',
+                          color: '#111827'
+                        }}>正常占比</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {phosphoAnalysis.data.map((item: any, index: number) => (
+                        <tr key={index} style={{ 
+                          borderBottom: '1px solid #e5e7eb',
+                          backgroundColor: index % 2 === 0 ? 'white' : '#f9fafb'
+                        }}>
+                          <td style={{ 
+                            padding: '8px',
+                            fontWeight: '500',
+                            color: '#6b21d4'
+                          }}>{item.PhosphoSites}</td>
+                          <td style={{ 
+                            padding: '8px', 
+                            textAlign: 'center',
+                            color: '#374151'
+                          }}>{item['No..in.Tumor']}</td>
+                          <td style={{ 
+                            padding: '8px', 
+                            textAlign: 'center',
+                            color: '#374151'
+                          }}>{item['Prop.in.Tumor']}</td>
+                          <td style={{ 
+                            padding: '8px', 
+                            textAlign: 'center',
+                            color: '#374151'
+                          }}>{item['No..in.Normal']}</td>
+                          <td style={{ 
+                            padding: '8px', 
+                            textAlign: 'center',
+                            color: '#374151'
+                          }}>{item['Prop.in.Normal']}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               )}
+              
+              {!isComprehensiveAnalysis(phosphoAnalysis) && phosphoAnalysis.plot && (
+                <UnifiedImageCarousel 
+                  images={[{ url: phosphoAnalysis.plot, title: '磷酸化分析图' }]}
+                  primaryColor="#f59e0b"
+                />
+              )}
+              
+              {/* 综合分析结果展示 */}
+              {isComprehensiveAnalysis(phosphoAnalysis) && phosphoAnalysis.analyses && (() => {
+                // 收集所有成功的分析图片
+                const allImages: Array<{ url: string; title: string }> = [];
+                const analysisDetails: Array<{ type: string; status: string; message: string }> = [];
+                
+                console.log('Processing phospho analyses:', phosphoAnalysis.analyses);
+                
+                Object.entries(phosphoAnalysis.analyses).forEach(([analysisType, analysis]) => {
+                  analysisDetails.push({
+                    type: analysisType,
+                    status: analysis.status,
+                    message: analysis.message
+                  });
+                  
+                  console.log(`Phospho analysis ${analysisType}:`, analysis);
+                  
+                  // 不管状态如何，只要有图片就收集
+                  if (analysis.plot) {
+                    console.log(`Found phospho plot for ${analysisType}`);
+                    allImages.push({ 
+                      url: analysis.plot, 
+                      title: analysisType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+                    });
+                  }
+                });
+                
+                console.log('Total phospho images collected:', allImages.length);
+                
+                return (
+                  <div>
+                    {/* 分析状态概览 */}
+                    <div style={{ 
+                      marginBottom: '16px',
+                      padding: '12px',
+                      background: '#f9fafb',
+                      borderRadius: '8px',
+                      border: '1px solid #e5e7eb'
+                    }}>
+                      <h6 style={{ margin: '0 0 8px 0', color: '#374151', fontSize: '14px', fontWeight: '600' }}>
+                        分析完成情况：成功 {phosphoAnalysis.summary.successful} / 总计 {phosphoAnalysis.summary.total}
+                      </h6>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        {analysisDetails.map((detail, index) => (
+                          <div key={index} style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            gap: '8px',
+                            fontSize: '13px'
+                          }}>
+                            <span style={{
+                              width: '6px',
+                              height: '6px',
+                              borderRadius: '50%',
+                              background: detail.status === 'success' ? '#10b981' : '#ef4444'
+                            }}></span>
+                            <span style={{ fontWeight: '500', color: '#374151' }}>{detail.type}:</span>
+                            <span style={{ color: '#6b7280' }}>{detail.message}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {/* 所有图片的轮播图 */}
+                    {allImages.length > 0 && (
+                      <UnifiedImageCarousel 
+                        images={allImages}
+                        title="磷酸化综合分析图表"
+                        primaryColor="#f59e0b"
+                      />
+                    )}
+                  </div>
+                );
+              })()}
             </div>
           </div>
         )}
@@ -719,39 +884,10 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
                 fontWeight: '500'
               }}>{transcriptomeAnalysis.message}</p>
               {transcriptomeAnalysis.plot && (
-                <div style={{ margin: '12px 0', position: 'relative' }}>
-                  <img 
-                    src={transcriptomeAnalysis.plot}
-                    alt="转录组分析图"
-                    style={{
-                      width: '100%',
-                      height: 'auto',
-                      borderRadius: '8px',
-                      border: '1px solid #e5e7eb',
-                      cursor: 'pointer'
-                    }}
-                    onClick={() => openModal(transcriptomeAnalysis.plot!, '转录组分析图')}
-                  />
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '8px',
-                      left: '8px',
-                      background: 'rgba(0, 0, 0, 0.6)',
-                      color: 'white',
-                      borderRadius: '4px',
-                      padding: '4px 8px',
-                      fontSize: '12px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      opacity: 0.8
-                    }}
-                  >
-                    <ZoomIn size={12} />
-                    点击放大
-                  </div>
-                </div>
+                <UnifiedImageCarousel 
+                  images={[{ url: transcriptomeAnalysis.plot, title: '转录组分析图' }]}
+                  primaryColor="#10b981"
+                />
               )}
             </div>
           </div>
@@ -790,39 +926,10 @@ const AnalysisResults: React.FC<AnalysisResultsProps> = ({
                 fontWeight: '500'
               }}>{singleCellAnalysis.message}</p>
               {singleCellAnalysis.image_base64 && (
-                <div style={{ margin: '12px 0', position: 'relative' }}>
-                  <img 
-                    src={singleCellAnalysis.image_base64}
-                    alt="单细胞分析图"
-                    style={{
-                      width: '100%',
-                      height: 'auto',
-                      borderRadius: '8px',
-                      border: '1px solid #e5e7eb',
-                      cursor: 'pointer'
-                    }}
-                    onClick={() => openModal(singleCellAnalysis.image_base64!, '单细胞分析图')}
-                  />
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: '8px',
-                      left: '8px',
-                      background: 'rgba(0, 0, 0, 0.6)',
-                      color: 'white',
-                      borderRadius: '4px',
-                      padding: '4px 8px',
-                      fontSize: '12px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      opacity: 0.8
-                    }}
-                  >
-                    <ZoomIn size={12} />
-                    点击放大
-                  </div>
-                </div>
+                <UnifiedImageCarousel 
+                  images={[{ url: singleCellAnalysis.image_base64, title: '单细胞分析图' }]}
+                  primaryColor="#3b82f6"
+                />
               )}
             </div>
           </div>

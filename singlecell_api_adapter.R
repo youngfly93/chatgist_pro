@@ -50,7 +50,7 @@ load_dataset <- function(dataset_name) {
     stop(paste("Dataset file not found:", dataset_path))
   }
   
-  cat("Loading dataset:", dataset_name, "\n")
+  # cat("Loading dataset:", dataset_name, "\n")  # 注释掉以避免影响JSON输出
   seurat_obj <- readRDS(dataset_path)
   loaded_datasets[[dataset_name]] <<- seurat_obj
   
@@ -79,7 +79,7 @@ auto_select_dataset <- function(gene = NULL) {
         }
       }
     }, error = function(e) {
-      cat("Failed to load dataset", dataset_name, ":", e$message, "\n")
+      # cat("Failed to load dataset", dataset_name, ":", e$message, "\n")  # 注释掉以避免影响JSON输出
     })
   }
   
@@ -198,7 +198,7 @@ generate_violin_plot <- function(gene, dataset = NULL) {
   ggsave(temp_file, plot = p, width = 10, height = 6, dpi = 300)
   
   # 转换为base64
-  img_base64 <- base64encode(temp_file)
+  img_base64 <- paste0("data:image/png;base64,", base64encode(temp_file))
   
   # 清理临时文件
   unlink(temp_file)
@@ -269,7 +269,7 @@ generate_umap_celltype <- function(dataset = NULL) {
   ggsave(temp_file, plot = p, width = 10, height = 8, dpi = 300)
   
   # 转换为base64
-  img_base64 <- base64encode(temp_file)
+  img_base64 <- paste0("data:image/png;base64,", base64encode(temp_file))
   
   # 清理临时文件
   unlink(temp_file)
@@ -355,7 +355,7 @@ generate_umap_expression <- function(gene, dataset = NULL) {
   ggsave(temp_file, plot = p, width = 10, height = 8, dpi = 300)
   
   # 转换为base64
-  img_base64 <- base64encode(temp_file)
+  img_base64 <- paste0("data:image/png;base64,", base64encode(temp_file))
   
   # 清理临时文件
   unlink(temp_file)
@@ -417,8 +417,8 @@ main <- function() {
   args <- commandArgs(trailingOnly = TRUE)
   
   if (length(args) == 0) {
-    cat("Usage: Rscript singlecell_api_adapter.R --function=<function> --gene=<gene> [--dataset=<dataset>]\n")
-    cat("Functions: query, violin_plot, umap_celltype, umap_expression, comprehensive\n")
+    # cat("Usage: Rscript singlecell_api_adapter.R --function=<function> --gene=<gene> [--dataset=<dataset>]\n")
+    # cat("Functions: query, violin_plot, umap_celltype, umap_expression, comprehensive\n")
     quit(status = 1)
   }
   
@@ -435,7 +435,7 @@ main <- function() {
   
   # 检查必需参数
   if (is.null(params$`function`)) {
-    cat("Error: --function parameter is required\n")
+    # cat("Error: --function parameter is required\n")
     quit(status = 1)
   }
   

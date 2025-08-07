@@ -735,7 +735,16 @@
   min-height: 500px;
 }
 
-.chat-panel,
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--clr-gray-200);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--clr-gray-050);
+  height: 500px; /* 聊天面板保持固定高度 */
+}
+
 .results-panel {
   display: flex;
   flex-direction: column;
@@ -743,6 +752,8 @@
   border-radius: var(--radius-md);
   overflow: hidden;
   background: var(--clr-gray-050);
+  min-height: 500px; /* 使用最小高度而不是固定高度 */
+  max-height: 80vh; /* 限制最大高度，避免过长 */
 }
 
 .panel-header {
@@ -762,6 +773,10 @@
   flex: 1;
   padding: var(--space-2);
   background: white;
+  overflow-y: auto; /* 允许垂直滚动 */
+  overflow-x: auto; /* 允许水平滚动以查看完整表格 */
+  position: relative;
+  max-height: calc(80vh - 60px); /* 限制最大高度，60px是header的高度 */
 }
 
 .ai-chat-card-single {
@@ -805,6 +820,9 @@
   padding: 1rem;
   overflow-y: auto;
   min-height: 250px;
+  max-height: 400px; /* 限制最大高度，防止无限增长 */
+  scroll-behavior: smooth; /* 平滑滚动 */
+  position: relative; /* 建立定位上下文 */
 }
 
 .mini-chat-welcome {
